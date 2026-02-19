@@ -527,9 +527,9 @@ function ServiceForm({ form, setForm, onImageUpload, fileInputRef, uploadingFor,
         <button
           type="button"
           onClick={() => setForm(p => ({ ...p, is_active: !p.is_active }))}
-          className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${form.is_active ? 'bg-[#B91C1C]' : 'bg-stone-600'}`}
+          className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${form.is_active ? 'bg-[#B91C1C]' : 'bg-stone-600'}`}
         >
-          <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-4' : 'translate-x-0.5'}`} />
+          <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-5' : 'translate-x-0'}`} />
         </button>
         <span className="text-sm text-stone-300">Visible on website</span>
       </div>
