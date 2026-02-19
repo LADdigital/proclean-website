@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
+import ImagePlaceholder from '../components/ImagePlaceholder';
 import ServiceImageUpload from '../components/ServiceImageUpload';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { services as staticServices } from '../data/services';
@@ -140,7 +141,7 @@ export default function Services() {
     <div ref={animRef}>
       <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-brand-charcoal overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <img src="/procleanteam.jpeg" alt="Pro Clean Auto Detail Systems" className="w-full h-full object-cover" />
+          <ImagePlaceholder alt="Pro Clean Auto Detail Systems" className="w-full h-full" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 to-brand-charcoal" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,10 +185,9 @@ export default function Services() {
           {displayServices.map((service, i) => {
             const anchorId = service.service_key ?? service.id;
             const staticMatch = staticServices.find(s => s.id === service.service_key);
-            const fallbackImageEntry = siteContent.images.services[anchorId as keyof typeof siteContent.images.services];
             const uploadedImage = serviceImages[anchorId];
             const dbImage = service.image_url;
-            const hasImage = isEditorMode || uploadedImage || dbImage || fallbackImageEntry;
+            const hasImage = isEditorMode || uploadedImage || dbImage || true;
             const reverseLayout = i % 2 === 1 || anchorId === 'ceramic-coating';
 
             return (
@@ -251,11 +251,11 @@ export default function Services() {
                           <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg image-hover-apple">
                             <img src={dbImage} alt={service.title} className="w-full h-full object-cover" />
                           </div>
-                        ) : fallbackImageEntry ? (
+                        ) : (
                           <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg image-hover-apple">
-                            <img src={fallbackImageEntry.src} alt={fallbackImageEntry.alt || service.title} className="w-full h-full object-cover" />
+                            <ImagePlaceholder alt={service.title} className="w-full h-full" />
                           </div>
-                        ) : null}
+                        )}
                       </div>
                     )}
                   </div>

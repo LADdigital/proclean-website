@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
+import ImagePlaceholder from '../components/ImagePlaceholder';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { supabase } from '../lib/supabase';
 
@@ -92,11 +93,7 @@ export default function Gallery() {
     <div ref={animRef}>
       <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-brand-charcoal overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <img
-            src="/procleanteam.jpeg"
-            alt="Pro Clean Auto Detail Systems gallery"
-            className="w-full h-full object-cover"
-          />
+          <ImagePlaceholder alt="Pro Clean Auto Detail Systems gallery" className="w-full h-full" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 to-brand-charcoal" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
