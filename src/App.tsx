@@ -43,7 +43,7 @@ function DetailModeManager() {
   return <DetailModeOverlay />;
 }
 
-function PublicLayout() {
+function PublicLayout({ showLoader }: { showLoader: boolean }) {
   return (
     <>
       <ScrollToTop />
@@ -61,7 +61,7 @@ function PublicLayout() {
       </main>
       <DeveloperSignature />
       <Footer />
-      <ChatPlaceholder />
+      {!showLoader && <ChatPlaceholder />}
     </>
   );
 }
@@ -85,7 +85,7 @@ function AdminLayout() {
   );
 }
 
-function AppRoutes() {
+function AppRoutes({ showLoader }: { showLoader: boolean }) {
   const { pathname } = useLocation();
   const isAdmin = pathname.startsWith('/admin');
 
@@ -93,7 +93,7 @@ function AppRoutes() {
     return <AdminLayout />;
   }
 
-  return <PublicLayout />;
+  return <PublicLayout showLoader={showLoader} />;
 }
 
 export default function App() {
@@ -104,7 +104,7 @@ export default function App() {
     <ToastProvider>
       {showLoader && <LoadingScreen onDone={handleDone} />}
       <BrowserRouter>
-        <AppRoutes />
+        <AppRoutes showLoader={showLoader} />
       </BrowserRouter>
     </ToastProvider>
   );

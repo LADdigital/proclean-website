@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 interface GalleryImage {
@@ -12,6 +12,8 @@ interface GalleryImage {
 export default function MovingGallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -60,8 +62,16 @@ export default function MovingGallery() {
         </div>
       </div>
 
-      <div className="relative w-full overflow-hidden">
-        <div className="flex gap-6 animate-scroll hover:pause">
+      <div
+        className="relative w-full overflow-hidden cursor-pointer select-none"
+        onClick={() => setPaused(p => !p)}
+        title={paused ? 'Click to resume' : 'Click to pause'}
+      >
+        <div
+          ref={trackRef}
+          className="flex gap-6 animate-scroll"
+          style={{ animationPlayState: paused ? 'paused' : 'running' }}
+        >
           {[...images, ...images].map((image, idx) => (
             <div
               key={`${image.id}-${idx}`}
@@ -81,6 +91,13 @@ export default function MovingGallery() {
             </div>
           ))}
         </div>
+        {paused && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-black/50 text-white text-sm font-medium px-4 py-2 rounded-full backdrop-blur-sm">
+              Paused — click to resume
+            </div>
+          </div>
+        )}
       </div>
 
       <style>{`
@@ -95,10 +112,6 @@ export default function MovingGallery() {
 
         .animate-scroll {
           animation: scroll 20s linear infinite;
-        }
-
-        .animate-scroll:hover {
-          animation-play-state: paused;
         }
       `}</style>
     </div>
