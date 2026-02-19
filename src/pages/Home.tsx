@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   Star,
   ArrowRight,
@@ -12,7 +12,7 @@ import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { useGalleryConfig } from '../hooks/useGalleryConfig';
+import { supabase } from '../lib/supabase';
 import { useHeroReflection, useBadgeFlip } from '../features/easterEggs/easterEggs';
 import { useToast } from '../components/ui/Toast';
 import { CONTACT } from '../data/services';
@@ -77,10 +77,19 @@ export default function Home() {
   const animRef = useScrollAnimation();
   const heroRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
-  const { images: galleryImages } = useGalleryConfig(
-    'home_carousel',
-    siteContent.images.gallery
-  );
+  const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>(siteContent.images.gallery);
+
+  useEffect(() => {
+    supabase
+      .from('gallery_images')
+      .select('image_url, position')
+      .order('position', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setGalleryImages(data.map((img, i) => ({ src: img.image_url, alt: `Gallery image ${i + 1}` })));
+        }
+      });
+  }, []);
   const { isFlipped, handleFlip } = useBadgeFlip((msg) => show(msg));
   useHeroReflection(heroRef);
   const { backgroundTransform, contentTransform } = useHeroDepth();
