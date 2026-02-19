@@ -15,7 +15,7 @@ export default function AdminGalleryPanel() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [altText, setAltText] = useState('');
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<GalleryImage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,31 +33,40 @@ export default function AdminGalleryPanel() {
   }
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+
     setUploading(true);
+    setUploadProgress({ done: 0, total: files.length });
 
-    const ext = file.name.split('.').pop();
-    const path = `gallery/${Date.now()}.${ext}`;
-    const { error: uploadError } = await supabase.storage
-      .from('admin-gallery')
-      .upload(path, file, { upsert: true });
+    const currentMax = images.length > 0 ? Math.max(...images.map(i => i.position)) : 0;
 
-    if (!uploadError) {
-      const { data } = supabase.storage.from('admin-gallery').getPublicUrl(path);
-      const maxPosition = images.length > 0 ? Math.max(...images.map(i => i.position)) : 0;
-      await supabase.from('gallery_images').insert({
-        image_url: data.publicUrl,
-        alt_text: altText || null,
-        service_id: 'general',
-        position: maxPosition + 1,
-      });
-      await fetchImages();
-      setAltText('');
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
+    await Promise.all(
+      files.map(async (file, idx) => {
+        const ext = file.name.split('.').pop();
+        const path = `gallery/${Date.now()}-${idx}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('admin-gallery')
+          .upload(path, file, { upsert: true });
 
+        if (!uploadError) {
+          const { data } = supabase.storage.from('admin-gallery').getPublicUrl(path);
+          await supabase.from('gallery_images').insert({
+            image_url: data.publicUrl,
+            alt_text: null,
+            service_id: 'general',
+            position: currentMax + idx + 1,
+          });
+        }
+
+        setUploadProgress(prev => prev ? { ...prev, done: prev.done + 1 } : null);
+      })
+    );
+
+    await fetchImages();
+    setUploadProgress(null);
     setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   async function confirmDelete() {
@@ -75,33 +84,33 @@ export default function AdminGalleryPanel() {
       </div>
 
       <div className="p-5 rounded-2xl bg-[#2a2a2a] border border-stone-700 mb-6">
-        <h3 className="text-sm font-semibold text-white mb-4">Upload New Photo</h3>
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs font-medium text-stone-400 mb-1.5">Description (optional)</label>
-            <input
-              type="text"
-              value={altText}
-              onChange={(e) => setAltText(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-[#1a1a1a] border border-stone-700 text-white text-sm focus:outline-none focus:border-[#B91C1C] transition-colors"
-              placeholder="e.g. Ceramic coating on black BMW"
+        <h3 className="text-sm font-semibold text-white mb-4">Upload Photos</h3>
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="w-full py-3 rounded-xl border-2 border-dashed border-stone-600 hover:border-[#B91C1C] text-stone-400 hover:text-white text-sm font-medium transition-colors disabled:opacity-50"
+        >
+          {uploading && uploadProgress
+            ? `Uploading ${uploadProgress.done} / ${uploadProgress.total}...`
+            : 'Choose Photos from Device'}
+        </button>
+        {uploading && uploadProgress && (
+          <div className="mt-3 w-full bg-stone-700 rounded-full h-1.5">
+            <div
+              className="bg-[#B91C1C] h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${(uploadProgress.done / uploadProgress.total) * 100}%` }}
             />
           </div>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="w-full py-3 rounded-xl border-2 border-dashed border-stone-600 hover:border-[#B91C1C] text-stone-400 hover:text-white text-sm font-medium transition-colors disabled:opacity-50"
-          >
-            {uploading ? 'Uploading...' : 'Choose Photo from Device'}
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleUpload}
-            className="hidden"
-          />
-        </div>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleUpload}
+          className="hidden"
+        />
+        <p className="text-xs text-stone-500 mt-2">You can select multiple photos at once</p>
       </div>
 
       {loading ? (
