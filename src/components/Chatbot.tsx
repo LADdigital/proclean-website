@@ -265,6 +265,22 @@ export default function Chatbot() {
         aria-expanded={isOpen}
         className="fixed bottom-6 right-6 z-[9999] group"
       >
+        {!isOpen && (
+          <svg
+            viewBox="0 0 100 100"
+            className="absolute w-24 h-24 -top-5 -left-5 pointer-events-none select-none"
+            aria-hidden="true"
+          >
+            <defs>
+              <path id="curve" d="M 15,50 A 35,35 0 1,1 85,50" />
+            </defs>
+            <text className="fill-white" style={{ fontSize: '12.5px', fontWeight: 600, letterSpacing: '0.04em' }}>
+              <textPath href="#curve" startOffset="50%" textAnchor="middle">
+                Ask Me Anything
+              </textPath>
+            </text>
+          </svg>
+        )}
         <div
           className={`relative w-14 h-14 flex items-center justify-center text-white cursor-pointer
             ${animationClass}
