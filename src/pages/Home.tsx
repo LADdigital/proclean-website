@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
-import AdminGalleryManager from '../components/AdminGalleryManager';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useGalleryConfig } from '../hooks/useGalleryConfig';
 import { useHeroReflection, useBadgeFlip } from '../features/easterEggs/easterEggs';
@@ -78,7 +77,7 @@ export default function Home() {
   const animRef = useScrollAnimation();
   const heroRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
-  const { images: galleryImages, updateImages } = useGalleryConfig(
+  const { images: galleryImages } = useGalleryConfig(
     'home_carousel',
     siteContent.images.gallery
   );
@@ -432,10 +431,6 @@ export default function Home() {
             </p>
           </div>
 
-          <AdminGalleryManager
-            currentImages={galleryImages.map(img => img.src)}
-            onImagesUpdate={updateImages}
-          />
         </div>
 
         <EnhancedCarousel images={galleryImages} />
