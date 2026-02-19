@@ -16,34 +16,11 @@ import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useGalleryConfig } from '../hooks/useGalleryConfig';
 import { useHeroReflection, useBadgeFlip } from '../features/easterEggs/easterEggs';
 import { useToast } from '../components/ui/Toast';
-import { CONTACT, services } from '../data/services';
+import { CONTACT } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { useHeroDepth } from '../hooks/useHeroDepth';
 import { useRevealAnimation } from '../hooks/useRevealAnimation';
-
-const homeServiceIds = [
-  'paint-correction',
-  'ceramic-coating',
-  'paintless-dent-repair',
-  'complete-detailing',
-  'wheel-restoration',
-];
-
-const completeDetailingService = {
-  id: 'complete-detailing',
-  title: 'Complete Detailing',
-  shortTitle: 'Complete Detailing',
-  description:
-    'Full interior and exterior detailing for a complete vehicle transformation. Our comprehensive service combines deep interior cleaning with exterior wash, decontamination, polish, and protection for showroom-quality results inside and out.',
-  features: [],
-  seoTitle: '',
-  seoDescription: '',
-};
-
-const homeServices = homeServiceIds.map((id) => {
-  if (id === 'complete-detailing') return completeDetailingService;
-  return services.find((s) => s.id === id)!;
-}).filter(Boolean);
+import { useAdminServices } from '../hooks/useAdminServices';
 
 const svgProps = {
   width: 24,
@@ -111,6 +88,8 @@ export default function Home() {
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
   const galleryReveal = useRevealAnimation();
+  const { services: adminServices, loading: servicesLoading } = useAdminServices();
+  const previewServices = adminServices.slice(0, 5);
 
   return (
     <div ref={animRef}>
@@ -205,28 +184,63 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {homeServices.map((service, i) => (
-              <Link
-                key={service.id}
-                to={service.id === 'complete-detailing' ? '/services' : `/services#${service.id}`}
-                className={`group relative p-6 rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'} stagger-item-${i % 6}`}
-              >
-                <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
-                  {serviceIcons[service.id]}
-                </div>
-                <h3 className="text-lg font-semibold text-brand-charcoal mb-2 group-hover:text-brand-red transition-colors">
-                  {service.shortTitle}
-                </h3>
-                <p className="text-sm text-stone-500 leading-relaxed line-clamp-3">
-                  {service.description.substring(0, 140)}...
-                </p>
-                <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
-                  Learn More <ChevronRight className="w-4 h-4" />
-                </div>
-              </Link>
-            ))}
-          </div>
+          {servicesLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-44 rounded-xl bg-stone-100 animate-pulse" />
+              ))}
+            </div>
+          ) : previewServices.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {previewServices.map((service, i) => (
+                <Link
+                  key={service.id}
+                  to="/services"
+                  className={`group relative p-6 rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'} stagger-item-${i % 6}`}
+                >
+                  {service.image_url ? (
+                    <div className="w-12 h-12 rounded-lg overflow-hidden mb-4 shrink-0">
+                      <img src={service.image_url} alt={service.title} className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
+                      {serviceIcons[service.id] ?? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
+                        </svg>
+                      )}
+                    </div>
+                  )}
+                  <h3 className="text-lg font-semibold text-brand-charcoal mb-2 group-hover:text-brand-red transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-stone-500 leading-relaxed line-clamp-3">
+                    {service.description.substring(0, 140)}
+                  </p>
+                  {service.price > 0 && (
+                    <p className="mt-2 text-sm font-semibold text-brand-red">${service.price}</p>
+                  )}
+                  <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
+                    Learn More <ChevronRight className="w-4 h-4" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {serviceIcons && Object.keys(serviceIcons).slice(0, 5).map((id, i) => (
+                <Link
+                  key={id}
+                  to="/services"
+                  className={`group relative p-6 rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 stagger-item-${i % 6}`}
+                >
+                  <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
+                    {serviceIcons[id]}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12 fade-in">
             <Link

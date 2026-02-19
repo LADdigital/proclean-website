@@ -8,6 +8,7 @@ import { useRevealAnimation } from '../hooks/useRevealAnimation';
 import { services } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { supabase } from '../lib/supabase';
+import { useAdminServices } from '../hooks/useAdminServices';
 
 const svgProps = {
   width: 24,
@@ -109,6 +110,7 @@ export default function Services() {
   const [serviceImages, setServiceImages] = useState<Record<string, string>>({});
   const [isEditorMode, setIsEditorMode] = useState(false);
   const [_imagesFetchError, setImagesFetchError] = useState(false);
+  const { services: adminServices } = useAdminServices();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -203,6 +205,48 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      {adminServices.length > 0 && (
+        <section className="py-16 bg-white border-b border-stone-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {adminServices.map((service) => (
+                <div
+                  key={service.id}
+                  className="p-6 rounded-xl border border-stone-200 bg-white hover:border-brand-red/30 hover:shadow-xl hover:shadow-red-900/5 btn-apple-hover"
+                >
+                  {service.image_url && (
+                    <div className="aspect-[16/9] rounded-lg overflow-hidden mb-4">
+                      <img
+                        src={service.image_url}
+                        alt={service.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  {!service.image_url && (
+                    <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4">
+                      {serviceIcons[service.id] ?? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
+                        </svg>
+                      )}
+                    </div>
+                  )}
+                  <h3 className="text-lg font-semibold text-brand-charcoal mb-2">{service.title}</h3>
+                  <p className="text-sm text-stone-500 leading-relaxed line-clamp-3">{service.description}</p>
+                  {service.price > 0 && (
+                    <p className="mt-3 text-base font-bold text-brand-red">${service.price}</p>
+                  )}
+                  <div className="mt-4">
+                    <BookingButton size="sm">Book Now</BookingButton>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="bg-white">
         {services.map((service, i) => (

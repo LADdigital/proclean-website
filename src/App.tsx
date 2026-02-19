@@ -13,6 +13,10 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
+import { AdminAuthProvider } from './admin/AdminAuthContext';
+import AdminGuard from './admin/AdminGuard';
+import AdminDashboard from './admin/AdminDashboard';
+import AdminLogin from './admin/AdminLogin';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -38,7 +42,7 @@ function DetailModeManager() {
   return <DetailModeOverlay />;
 }
 
-function Layout() {
+function PublicLayout() {
   return (
     <>
       <ScrollToTop />
@@ -61,11 +65,41 @@ function Layout() {
   );
 }
 
+function AdminLayout() {
+  return (
+    <AdminAuthProvider>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminGuard>
+              <AdminDashboard />
+            </AdminGuard>
+          }
+        />
+      </Routes>
+    </AdminAuthProvider>
+  );
+}
+
+function AppRoutes() {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith('/admin');
+
+  if (isAdmin) {
+    return <AdminLayout />;
+  }
+
+  return <PublicLayout />;
+}
+
 export default function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
-        <Layout />
+        <AppRoutes />
       </BrowserRouter>
     </ToastProvider>
   );
