@@ -204,7 +204,7 @@ export default function Home() {
                     </div>
                   ) : (
                     <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
-                      {serviceIcons[service.id] ?? (
+                      {serviceIcons[service.service_key ?? ''] ?? (
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
                         </svg>
