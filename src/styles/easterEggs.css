@@ -1,0 +1,222 @@
+/* Easter Eggs Styles */
+
+/* Toast Component */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.toast-item {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 3px solid #e85d04;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #292524;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  max-width: 320px;
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+.toast-success {
+  border-left-color: #22c55e;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Detail Mode - Gloss Sweep Overlay */
+.detail-mode-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+body[data-detail-mode="on"] .detail-mode-overlay {
+  opacity: 1;
+}
+
+.detail-mode-sweep {
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.06) 55%,
+    transparent 60%,
+    transparent 100%
+  );
+  transform: translateX(-30%) rotate(15deg);
+}
+
+body[data-detail-mode="on"] .detail-mode-sweep {
+  animation: glossSweep 7s linear infinite;
+}
+
+@keyframes glossSweep {
+  0% {
+    transform: translateX(-30%) rotate(15deg);
+  }
+  100% {
+    transform: translateX(330%) rotate(15deg);
+  }
+}
+
+/* Detail Mode Cursor */
+body[data-detail-mode="on"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23fafaf9' stroke='%23e85d04' stroke-width='1.5'/%3E%3Ccircle cx='12' cy='12' r='3' fill='%23e85d04' opacity='0.3'/%3E%3C/svg%3E") 12 12, auto;
+}
+
+body[data-detail-mode="on"] a,
+body[data-detail-mode="on"] button,
+body[data-detail-mode="on"] [role="button"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23fafaf9' stroke='%23e85d04' stroke-width='1.5'/%3E%3Ccircle cx='12' cy='12' r='3' fill='%23e85d04' opacity='0.3'/%3E%3C/svg%3E") 12 12, pointer;
+}
+
+/* Hero Reflection Overlay */
+.hero-reflection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.hero-reflection-band {
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  width: 30%;
+  height: 300%;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 65%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  transform: rotate(25deg);
+  transition: transform 0.15s ease-out, opacity 0.3s ease;
+  will-change: transform;
+}
+
+/* Badge Flip Styles */
+.badge-flip-container {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.badge-flip-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.badge-flip-container.flipped .badge-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.badge-flip-front,
+.badge-flip-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.badge-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Reduced Motion - Disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  .detail-mode-sweep {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  body[data-detail-mode="on"] {
+    cursor: auto !important;
+  }
+
+  body[data-detail-mode="on"] a,
+  body[data-detail-mode="on"] button,
+  body[data-detail-mode="on"] [role="button"] {
+    cursor: pointer !important;
+  }
+
+  .hero-reflection-band {
+    opacity: 0 !important;
+  }
+
+  .badge-flip-inner {
+    transition: none !important;
+  }
+
+  .badge-flip-container.flipped .badge-flip-inner {
+    transform: none !important;
+  }
+
+  .toast-item {
+    animation: none !important;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .toast-item {
+    max-width: 100%;
+  }
+}
