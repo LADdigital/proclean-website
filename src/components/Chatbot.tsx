@@ -362,7 +362,7 @@ export default function Chatbot() {
               </div>
               <h3 className="text-white font-semibold mb-2">Welcome!</h3>
               <p className="text-stone-400 text-sm leading-relaxed">
-                Ask us about our detailing services, pricing, or book an appointment.
+                Ask us about our detailing services, pricing, or business.
               </p>
             </div>
           )}
