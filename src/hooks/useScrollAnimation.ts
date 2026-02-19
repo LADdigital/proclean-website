@@ -7,22 +7,32 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>() {
     const el = ref.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver(
+    const intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+            intersectionObserver.unobserve(entry.target);
           }
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
-    const targets = el.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .scale-in');
-    targets.forEach((target) => observer.observe(target));
+    function observeTargets() {
+      el!.querySelectorAll('.fade-in:not(.visible), .fade-in-left:not(.visible), .fade-in-right:not(.visible), .scale-in:not(.visible)')
+        .forEach((target) => intersectionObserver.observe(target));
+    }
 
-    return () => observer.disconnect();
+    observeTargets();
+
+    const mutationObserver = new MutationObserver(() => observeTargets());
+    mutationObserver.observe(el, { childList: true, subtree: true });
+
+    return () => {
+      intersectionObserver.disconnect();
+      mutationObserver.disconnect();
+    };
   }, []);
 
   return ref;
