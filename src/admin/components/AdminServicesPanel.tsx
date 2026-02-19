@@ -79,10 +79,14 @@ export default function AdminServicesPanel() {
 
   async function uploadImage(file: File, serviceId?: string): Promise<string | null> {
     const ext = file.name.split('.').pop();
-    const path = `services/${serviceId ?? 'new'}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from('admin-gallery').upload(path, file, { upsert: true });
-    if (error) return null;
-    const { data } = supabase.storage.from('admin-gallery').getPublicUrl(path);
+    const path = `service-images/${serviceId ?? 'new'}-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from('service-images').upload(path, file, { upsert: true });
+    if (error) {
+      console.error('Upload error:', error);
+      alert(`Upload failed: ${error.message}`);
+      return null;
+    }
+    const { data } = supabase.storage.from('service-images').getPublicUrl(path);
     return data.publicUrl;
   }
 
@@ -91,8 +95,15 @@ export default function AdminServicesPanel() {
     if (!file) return;
     setUploadingFor(serviceId);
     const url = await uploadImage(file, serviceId);
-    if (url) setForm(p => ({ ...p, image_url: url }));
+    if (url) {
+      setForm(p => ({ ...p, image_url: url }));
+      if (serviceId !== 'new') {
+        await supabase.from('admin_services').update({ image_url: url }).eq('id', serviceId);
+        setServices(prev => prev.map(s => s.id === serviceId ? { ...s, image_url: url } : s));
+      }
+    }
     setUploadingFor(null);
+    if (e.target) e.target.value = '';
   }
 
   function startEdit(service: AdminService) {
