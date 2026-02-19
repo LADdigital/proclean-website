@@ -274,7 +274,7 @@ export default function Chatbot() {
             <defs>
               <path id="curve" d="M 15,50 A 35,35 0 1,1 85,50" />
             </defs>
-            <text className="fill-white" style={{ fontSize: '12.5px', fontWeight: 600, letterSpacing: '0.04em' }}>
+            <text style={{ fill: '#B91C1C', fontSize: '12.5px', fontWeight: 600, letterSpacing: '0.04em' }}>
               <textPath href="#curve" startOffset="50%" textAnchor="middle">
                 Ask Me Anything
               </textPath>
