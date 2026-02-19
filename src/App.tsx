@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import LoadingScreen from './components/LoadingScreen';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import DeveloperSignature from './components/DeveloperSignature';
@@ -96,8 +97,12 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const [showLoader, setShowLoader] = useState(true);
+  const handleDone = useCallback(() => setShowLoader(false), []);
+
   return (
     <ToastProvider>
+      {showLoader && <LoadingScreen onDone={handleDone} />}
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
