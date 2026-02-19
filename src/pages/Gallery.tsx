@@ -13,6 +13,7 @@ interface GalleryImage {
 export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const animRef = useScrollAnimation();
@@ -29,7 +30,9 @@ export default function Gallery() {
       .select('id, image_url, position')
       .order('position', { ascending: true });
 
-    if (!error && data) {
+    if (error) {
+      setFetchError(true);
+    } else if (data) {
       setImages(data);
     }
     setLoading(false);
@@ -122,6 +125,10 @@ export default function Gallery() {
                   className="aspect-square rounded-xl sm:rounded-2xl bg-stone-200 animate-pulse"
                 />
               ))}
+            </div>
+          ) : fetchError ? (
+            <div className="text-center py-20">
+              <p className="text-stone-500 text-lg">Unable to load gallery. Please try again later.</p>
             </div>
           ) : images.length === 0 ? (
             <div className="text-center py-20">

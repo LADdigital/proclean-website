@@ -45,6 +45,7 @@ export default function Services() {
   const location = useLocation();
   const [serviceImages, setServiceImages] = useState<Record<string, string>>({});
   const [isEditorMode, setIsEditorMode] = useState(false);
+  const [_imagesFetchError, setImagesFetchError] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -60,7 +61,9 @@ export default function Services() {
       .from('service_images')
       .select('service_id, image_url');
 
-    if (!error && data) {
+    if (error) {
+      setImagesFetchError(true);
+    } else if (data) {
       const imagesMap: Record<string, string> = {};
       data.forEach((img: ServiceImage) => {
         imagesMap[img.service_id] = img.image_url;
