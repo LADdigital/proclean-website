@@ -3,11 +3,15 @@ import { supabase } from '../lib/supabase';
 
 export interface AdminServiceRecord {
   id: string;
+  service_key: string | null;
   title: string;
+  short_title: string;
   description: string;
+  features: string[];
   price: number;
   image_url: string | null;
   is_active: boolean;
+  sort_order: number;
   created_at: string;
 }
 
@@ -22,7 +26,7 @@ export function useAdminServices() {
         .from('admin_services')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: true });
+        .order('sort_order', { ascending: true });
 
       if (error) {
         setError(true);
