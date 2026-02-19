@@ -203,32 +203,28 @@ export default function Home() {
                 <Link
                   key={service.id}
                   to="/services"
-                  className={`group relative p-6 rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'} stagger-item-${i % 6}`}
+                  className={`group relative rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 overflow-hidden flex flex-col h-full ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'} stagger-item-${i % 6}`}
                 >
-                  {service.image_url ? (
-                    <div className="w-12 h-12 rounded-lg overflow-hidden mb-4 shrink-0">
-                      <img src={service.image_url} alt={service.title} className="w-full h-full object-cover" />
+                  <div className="relative overflow-hidden bg-stone-100 aspect-[4/3]">
+                    {service.image_url ? (
+                      <img src={service.image_url} alt={service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full rounded-lg bg-red-50 text-brand-red flex items-center justify-center group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
+                        {serviceIcons[service.service_key ?? ''] ?? (
+                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
+                          </svg>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+                    <h3 className="text-lg font-semibold text-brand-charcoal group-hover:text-brand-red transition-colors">
+                      {service.title}
+                    </h3>
+                    <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
+                      Learn More <ChevronRight className="w-4 h-4" />
                     </div>
-                  ) : (
-                    <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
-                      {serviceIcons[service.service_key ?? ''] ?? (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
-                        </svg>
-                      )}
-                    </div>
-                  )}
-                  <h3 className="text-lg font-semibold text-brand-charcoal mb-2 group-hover:text-brand-red transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-stone-500 leading-relaxed line-clamp-3">
-                    {service.description.substring(0, 140)}
-                  </p>
-                  {service.price > 0 && (
-                    <p className="mt-2 text-sm font-semibold text-brand-red">${service.price}</p>
-                  )}
-                  <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
-                    Learn More <ChevronRight className="w-4 h-4" />
                   </div>
                 </Link>
               ))}
@@ -239,10 +235,15 @@ export default function Home() {
                 <Link
                   key={id}
                   to="/services"
-                  className={`group relative p-6 rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 stagger-item-${i % 6}`}
+                  className={`group relative rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 overflow-hidden flex flex-col h-full stagger-item-${i % 6}`}
                 >
-                  <div className="w-12 h-12 rounded-lg bg-red-50 text-brand-red flex items-center justify-center mb-4 group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
-                    {serviceIcons[id]}
+                  <div className="w-full aspect-[4/3] rounded-lg bg-red-50 text-brand-red flex items-center justify-center group-hover:bg-brand-red group-hover:text-white transition-colors duration-300">
+                    <div className="scale-150">
+                      {serviceIcons[id]}
+                    </div>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+                    <p className="text-stone-400 group-hover:text-brand-red transition-colors">Loading...</p>
                   </div>
                 </Link>
               ))}
