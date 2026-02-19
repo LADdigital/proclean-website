@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
-import ImagePlaceholder from '../components/ImagePlaceholder';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { supabase } from '../lib/supabase';
 import { useHeroReflection, useBadgeFlip } from '../features/easterEggs/easterEggs';
@@ -103,23 +102,13 @@ export default function Home() {
     <div ref={animRef}>
       <section className="relative lg:min-h-[100vh] lg:flex lg:items-center overflow-hidden bg-brand-charcoal pt-24 pb-12 sm:pt-28 sm:pb-16 lg:py-24">
         <div ref={heroRef} className="absolute inset-0 lg:flex lg:items-center lg:justify-center hidden" style={backgroundTransform}>
-          {siteContent.images.hero ? (
-            <>
-              <img
-                src={siteContent.images.hero.src}
-                alt={siteContent.images.hero.alt}
-                className="w-full h-full object-contain"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/85 via-brand-charcoal/60 to-brand-charcoal/45" />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-transparent to-brand-charcoal/40" />
-            </>
-          ) : (
-            <>
-              <ImagePlaceholder alt="Hero image" className="w-full h-full" />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/85 via-brand-charcoal/60 to-brand-charcoal/45" />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-transparent to-brand-charcoal/40" />
-            </>
-          )}
+          <img
+            src={siteContent.images.hero.src}
+            alt={siteContent.images.hero.alt}
+            className="w-full h-full object-contain"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/85 via-brand-charcoal/60 to-brand-charcoal/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-transparent to-brand-charcoal/40" />
         </div>
 
         <div className="relative z-10 w-full" style={contentTransform}>
@@ -314,15 +303,11 @@ export default function Home() {
             </div>
 
             <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-brand-charcoal image-hover-apple">
-              {siteContent.images.trustedBy ? (
-                <img
-                  src={siteContent.images.trustedBy.src}
-                  alt={siteContent.images.trustedBy.alt}
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <ImagePlaceholder alt="Why Choose Us" className="w-full h-96" />
-              )}
+              <img
+                src={siteContent.images.trustedBy.src}
+                alt={siteContent.images.trustedBy.alt}
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
         </div>

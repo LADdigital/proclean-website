@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
-import ImagePlaceholder from '../components/ImagePlaceholder';
 import SocialLinks from '../components/SocialLinks';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { CONTACT } from '../data/services';
@@ -51,7 +50,11 @@ export default function Contact() {
     <div ref={animRef}>
       <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-brand-charcoal overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <ImagePlaceholder alt="Pro Clean Auto Detail Systems" className="w-full h-full" />
+          <img
+            src="/procleanteam.jpeg"
+            alt="Pro Clean Auto Detail Systems"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 to-brand-charcoal" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

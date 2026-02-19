@@ -1,6 +1,5 @@
 import { Shield, Award, Users, Heart, Star, CheckCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
-import ImagePlaceholder from '../components/ImagePlaceholder';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const values = [
@@ -33,7 +32,11 @@ export default function About() {
     <div ref={animRef}>
       <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-brand-charcoal overflow-hidden">
         <div className="absolute inset-0 opacity-20">
-          <ImagePlaceholder alt="Pro Clean Auto Detail Systems shop" className="w-full h-full" />
+          <img
+            src="/procleanteam.jpeg"
+            alt="Pro Clean Auto Detail Systems shop"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 to-brand-charcoal" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,7 +86,11 @@ export default function About() {
               </div>
             </div>
             <div className="fade-in-right rounded-2xl overflow-hidden shadow-2xl bg-brand-charcoal image-hover-apple">
-              <ImagePlaceholder alt="The Pro Clean Auto Detail Systems team at their Yakima, WA shop" className="w-full h-96" />
+              <img
+                src="/procleanteam.jpeg"
+                alt="The Pro Clean Auto Detail Systems team at their Yakima, WA shop"
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
         </div>
