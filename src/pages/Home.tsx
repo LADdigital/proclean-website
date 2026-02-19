@@ -1,16 +1,11 @@
 import { useRef } from 'react';
 import {
-  Shield,
-  Sparkles,
-  Car,
-  CircleDot,
   Star,
   ArrowRight,
   ChevronRight,
   Phone,
   Clock,
   MapPin,
-  Wrench,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BookingButton from '../components/BookingButton';
@@ -50,12 +45,56 @@ const homeServices = homeServiceIds.map((id) => {
   return services.find((s) => s.id === id)!;
 }).filter(Boolean);
 
+const svgProps = {
+  width: 24,
+  height: 24,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 2,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+};
+
 const serviceIcons: Record<string, React.ReactNode> = {
-  'ceramic-coating': <Shield className="w-6 h-6" />,
-  'paint-correction': <Sparkles className="w-6 h-6" />,
-  'wheel-restoration': <CircleDot className="w-6 h-6" />,
-  'paintless-dent-repair': <Wrench className="w-6 h-6" />,
-  'complete-detailing': <Car className="w-6 h-6" />,
+  'paint-correction': (
+    <svg {...svgProps}>
+      <path d="M4 20h16"/>
+      <path d="M6 20l2-6h8l2 6"/>
+      <path d="M9 10l3-6 3 6"/>
+    </svg>
+  ),
+  'ceramic-coating': (
+    <svg {...svgProps}>
+      <path d="M12 3l7 4v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V7l7-4z"/>
+    </svg>
+  ),
+  'paintless-dent-repair': (
+    <svg {...svgProps}>
+      <rect x="3" y="10" width="10" height="6" rx="1"/>
+      <path d="M14 7l4 4"/>
+      <path d="M16 5l3 3"/>
+    </svg>
+  ),
+  'complete-detailing': (
+    <svg {...svgProps}>
+      <path d="M3 6h18"/>
+      <path d="M3 12h18"/>
+      <path d="M3 18h18"/>
+      <circle cx="19" cy="6" r="2" fill="currentColor" stroke="none"/>
+      <circle cx="19" cy="18" r="2" fill="currentColor" stroke="none"/>
+    </svg>
+  ),
+  'wheel-restoration': (
+    <svg {...svgProps}>
+      <circle cx="12" cy="12" r="9"/>
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="12" y1="3" x2="12" y2="9"/>
+      <line x1="12" y1="15" x2="12" y2="21"/>
+      <line x1="3" y1="12" x2="9" y2="12"/>
+      <line x1="15" y1="12" x2="21" y2="12"/>
+    </svg>
+  ),
 };
 
 export default function Home() {

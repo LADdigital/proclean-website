@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  Shield,
-  Sparkles,
-  Car,
-  Droplets,
-  CircleDot,
-  PaintBucket,
-  Disc3,
-  Truck,
-  Ship,
-  Zap,
-  CheckCircle,
-} from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
 import ServiceImageUpload from '../components/ServiceImageUpload';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
@@ -21,17 +9,92 @@ import { services } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { supabase } from '../lib/supabase';
 
+const svgProps = {
+  width: 24,
+  height: 24,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: '#B91C1C',
+  strokeWidth: 2,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+};
+
 const serviceIcons: Record<string, React.ReactNode> = {
-  'ceramic-coating': <Shield className="w-8 h-8" />,
-  'paint-correction': <Sparkles className="w-8 h-8" />,
-  'interior-detailing': <Car className="w-8 h-8" />,
-  'exterior-detailing': <Droplets className="w-8 h-8" />,
-  'wheel-restoration': <CircleDot className="w-8 h-8" />,
-  'paint-touchup': <PaintBucket className="w-8 h-8" />,
-  'rock-chip-repair': <Disc3 className="w-8 h-8" />,
-  'paintless-dent-repair': <Zap className="w-8 h-8" />,
-  'rv-detailing': <Truck className="w-8 h-8" />,
-  'boat-detailing': <Ship className="w-8 h-8" />,
+  'paint-correction': (
+    <svg {...svgProps}>
+      <path d="M4 20h16"/>
+      <path d="M6 20l2-6h8l2 6"/>
+      <path d="M9 10l3-6 3 6"/>
+    </svg>
+  ),
+  'ceramic-coating': (
+    <svg {...svgProps}>
+      <path d="M12 3l7 4v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V7l7-4z"/>
+    </svg>
+  ),
+  'paintless-dent-repair': (
+    <svg {...svgProps}>
+      <rect x="3" y="10" width="10" height="6" rx="1"/>
+      <path d="M14 7l4 4"/>
+      <path d="M16 5l3 3"/>
+    </svg>
+  ),
+  'interior-detailing': (
+    <svg {...svgProps}>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
+  'exterior-detailing': (
+    <svg {...svgProps}>
+      <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 1-1 1h-3"/>
+      <path d="M8 21h8"/>
+      <path d="M12 3v4"/>
+    </svg>
+  ),
+  'wheel-restoration': (
+    <svg {...svgProps}>
+      <circle cx="12" cy="12" r="9"/>
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="12" y1="3" x2="12" y2="9"/>
+      <line x1="12" y1="15" x2="12" y2="21"/>
+      <line x1="3" y1="12" x2="9" y2="12"/>
+      <line x1="15" y1="12" x2="21" y2="12"/>
+    </svg>
+  ),
+  'paint-touchup': (
+    <svg {...svgProps}>
+      <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+      <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+      <path d="M2 2l7.586 7.586"/>
+      <circle cx="11" cy="11" r="2"/>
+    </svg>
+  ),
+  'rock-chip-repair': (
+    <svg {...svgProps}>
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M9 9l6 6"/>
+      <path d="M9 15l2-2"/>
+      <path d="M13 9l2 2"/>
+    </svg>
+  ),
+  'rv-detailing': (
+    <svg {...svgProps}>
+      <rect x="1" y="7" width="18" height="11" rx="2"/>
+      <path d="M19 9h2l2 4v2h-4"/>
+      <circle cx="6" cy="18" r="2"/>
+      <circle cx="16" cy="18" r="2"/>
+    </svg>
+  ),
+  'boat-detailing': (
+    <svg {...svgProps}>
+      <path d="M3 17l4-8 5 6 3-4 4 6"/>
+      <path d="M2 20h20"/>
+      <path d="M12 3v4"/>
+      <path d="M8 7h8"/>
+    </svg>
+  ),
 };
 
 
