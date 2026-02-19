@@ -11,6 +11,7 @@ export interface AdminServiceRecord {
   price: number;
   image_url: string | null;
   is_active: boolean;
+  show_on_home: boolean;
   sort_order: number;
   created_at: string;
 }
@@ -38,5 +39,7 @@ export function useAdminServices() {
     fetch();
   }, []);
 
-  return { services, loading, error };
+  const homeServices = services.filter(s => s.show_on_home);
+
+  return { services, homeServices, loading, error };
 }

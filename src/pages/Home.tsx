@@ -96,8 +96,7 @@ export default function Home() {
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
   const galleryReveal = useRevealAnimation();
-  const { services: adminServices, loading: servicesLoading } = useAdminServices();
-  const previewServices = adminServices.slice(0, 5);
+  const { homeServices, loading: servicesLoading } = useAdminServices();
 
   return (
     <div ref={animRef}>
@@ -198,9 +197,9 @@ export default function Home() {
                 <div key={i} className="h-44 rounded-xl bg-stone-100 animate-pulse" />
               ))}
             </div>
-          ) : previewServices.length > 0 ? (
+          ) : homeServices.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {previewServices.map((service, i) => (
+              {homeServices.map((service, i) => (
                 <Link
                   key={service.id}
                   to="/services"

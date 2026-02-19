@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
-import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home } from 'lucide-react';
 
 interface AdminService {
   id: string;
@@ -13,6 +13,7 @@ interface AdminService {
   price: number;
   image_url: string | null;
   is_active: boolean;
+  show_on_home: boolean;
   sort_order: number;
   created_at: string;
 }
@@ -25,6 +26,7 @@ interface ServiceFormData {
   price: string;
   image_url: string;
   is_active: boolean;
+  show_on_home: boolean;
 }
 
 const emptyForm: ServiceFormData = {
@@ -35,6 +37,7 @@ const emptyForm: ServiceFormData = {
   price: '',
   image_url: '',
   is_active: true,
+  show_on_home: false,
 };
 
 function serviceToForm(s: AdminService): ServiceFormData {
@@ -46,6 +49,7 @@ function serviceToForm(s: AdminService): ServiceFormData {
     price: s.price > 0 ? String(s.price) : '',
     image_url: s.image_url ?? '',
     is_active: s.is_active,
+    show_on_home: s.show_on_home ?? false,
   };
 }
 
@@ -114,6 +118,7 @@ export default function AdminServicesPanel() {
       price: parseFloat(form.price) || 0,
       image_url: form.image_url || null,
       is_active: form.is_active,
+      show_on_home: form.show_on_home,
     }).eq('id', id);
     await fetchServices();
     setEditingId(null);
@@ -132,6 +137,7 @@ export default function AdminServicesPanel() {
       price: parseFloat(form.price) || 0,
       image_url: form.image_url || null,
       is_active: form.is_active,
+      show_on_home: form.show_on_home,
       sort_order: services.length + 1,
     });
     await fetchServices();
@@ -143,6 +149,11 @@ export default function AdminServicesPanel() {
   async function toggleActive(service: AdminService) {
     await supabase.from('admin_services').update({ is_active: !service.is_active }).eq('id', service.id);
     setServices(prev => prev.map(s => s.id === service.id ? { ...s, is_active: !s.is_active } : s));
+  }
+
+  async function toggleShowOnHome(service: AdminService) {
+    await supabase.from('admin_services').update({ show_on_home: !service.show_on_home }).eq('id', service.id);
+    setServices(prev => prev.map(s => s.id === service.id ? { ...s, show_on_home: !s.show_on_home } : s));
   }
 
   async function confirmDelete() {
@@ -229,6 +240,7 @@ export default function AdminServicesPanel() {
             onCancelEdit={cancelEdit}
             onSaveEdit={saveEdit}
             onToggleActive={toggleActive}
+            onToggleShowOnHome={toggleShowOnHome}
             onDelete={() => setDeleteTarget(service)}
             onImageUpload={(e) => handleImageUpload(e, service.id)}
           />
@@ -261,6 +273,7 @@ interface ServiceRowProps {
   onCancelEdit: () => void;
   onSaveEdit: (id: string) => void;
   onToggleActive: (s: AdminService) => void;
+  onToggleShowOnHome: (s: AdminService) => void;
   onDelete: () => void;
   onImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -268,7 +281,7 @@ interface ServiceRowProps {
 function ServiceRow({
   service, editingId, expandedId, setExpandedId,
   form, setForm, saving, uploadingFor, editFileRef,
-  onStartEdit, onCancelEdit, onSaveEdit, onToggleActive, onDelete, onImageUpload,
+  onStartEdit, onCancelEdit, onSaveEdit, onToggleActive, onToggleShowOnHome, onDelete, onImageUpload,
 }: ServiceRowProps) {
   const isEditing = editingId === service.id;
   const isExpanded = expandedId === service.id;
@@ -291,8 +304,13 @@ function ServiceRow({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-white text-sm truncate">{service.title}</span>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${service.is_active ? 'bg-emerald-900/50 text-emerald-400' : 'bg-stone-700 text-stone-500'}`}>
-              {service.is_active ? 'Visible' : 'Hidden'}
+              {service.is_active ? 'Active' : 'Hidden'}
             </span>
+            {service.show_on_home && (
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium shrink-0 bg-blue-900/50 text-blue-400 flex items-center gap-1">
+                <Home className="w-2.5 h-2.5" /> Home
+              </span>
+            )}
             {service.price > 0 && (
               <span className="text-xs text-stone-400 shrink-0">${service.price}</span>
             )}
@@ -303,6 +321,13 @@ function ServiceRow({
         </div>
 
         <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+          <button
+            onClick={() => onToggleShowOnHome(service)}
+            title={service.show_on_home ? 'Remove from home page' : 'Show on home page'}
+            className={`p-2 rounded-lg transition-colors ${service.show_on_home ? 'text-blue-400 hover:text-blue-300 hover:bg-blue-950/30' : 'text-stone-500 hover:text-blue-400 hover:bg-stone-700'}`}
+          >
+            <Home className="w-4 h-4" />
+          </button>
           <button
             onClick={() => onToggleActive(service)}
             title={service.is_active ? 'Hide from website' : 'Show on website'}
@@ -523,15 +548,33 @@ function ServiceForm({ form, setForm, onImageUpload, fileInputRef, uploadingFor,
         <input ref={fileInputRef} type="file" accept="image/*" onChange={onImageUpload} className="hidden" />
       </div>
 
-      <div className="flex items-center gap-3 pt-1">
-        <button
-          type="button"
-          onClick={() => setForm(p => ({ ...p, is_active: !p.is_active }))}
-          className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${form.is_active ? 'bg-[#B91C1C]' : 'bg-stone-600'}`}
-        >
-          <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-5' : 'translate-x-0'}`} />
-        </button>
-        <span className="text-sm text-stone-300">Visible on website</span>
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setForm(p => ({ ...p, is_active: !p.is_active }))}
+            className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${form.is_active ? 'bg-[#B91C1C]' : 'bg-stone-600'}`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${form.is_active ? 'translate-x-5' : 'translate-x-0'}`} />
+          </button>
+          <div>
+            <span className="text-sm text-stone-300">Active on /services page</span>
+            <p className="text-xs text-stone-600 mt-0.5">Controls visibility on the full Services page</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setForm(p => ({ ...p, show_on_home: !p.show_on_home }))}
+            className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${form.show_on_home ? 'bg-blue-600' : 'bg-stone-600'}`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${form.show_on_home ? 'translate-x-5' : 'translate-x-0'}`} />
+          </button>
+          <div>
+            <span className="text-sm text-stone-300">Show on Home page</span>
+            <p className="text-xs text-stone-600 mt-0.5">Appears in "Professional Auto Detailing Services" section</p>
+          </div>
+        </div>
       </div>
     </div>
   );
