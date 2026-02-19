@@ -10,14 +10,13 @@ import { supabase } from '../lib/supabase';
 import { useAdminServices, AdminServiceRecord } from '../hooks/useAdminServices';
 
 const svgProps = {
-  width: 24,
-  height: 24,
   viewBox: '0 0 24 24',
   fill: 'none',
   stroke: '#B91C1C',
   strokeWidth: 2,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
+  className: 'w-8 h-8',
 };
 
 const serviceIcons: Record<string, React.ReactNode> = {
