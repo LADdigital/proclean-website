@@ -13,12 +13,14 @@ interface EnhancedCarouselProps {
 export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number>();
-  const [currentSpeed, setCurrentSpeed] = useState(0.5);
-  const targetSpeedRef = useRef(0.5);
-  const isInteractingRef = useRef(false);
-  const resumeTimeoutRef = useRef<NodeJS.Timeout>();
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
 
   const duplicatedImages = [...images, ...images, ...images];
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -26,46 +28,18 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
 
     if (prefersReducedMotion()) return;
 
-    const baseSpeed = 0.5;
-    const acceleration = 0.02;
+    const speed = 0.5;
 
     const animate = () => {
-      if (container) {
-        const speedDiff = targetSpeedRef.current - currentSpeed;
-        const newSpeed = currentSpeed + speedDiff * acceleration;
-        setCurrentSpeed(newSpeed);
+      if (container && !pausedRef.current) {
+        container.scrollLeft += speed;
 
-        if (!isInteractingRef.current) {
-          container.scrollLeft += newSpeed;
-
-          if (container.scrollLeft >= container.scrollWidth / 3) {
-            container.scrollLeft = 0;
-          }
+        if (container.scrollLeft >= container.scrollWidth / 3) {
+          container.scrollLeft = 0;
         }
       }
       animationFrameRef.current = requestAnimationFrame(animate);
     };
-
-    const handleInteractionStart = () => {
-      isInteractingRef.current = true;
-      targetSpeedRef.current = 0.1;
-
-      if (resumeTimeoutRef.current) {
-        clearTimeout(resumeTimeoutRef.current);
-      }
-    };
-
-    const handleInteractionEnd = () => {
-      resumeTimeoutRef.current = setTimeout(() => {
-        isInteractingRef.current = false;
-        targetSpeedRef.current = baseSpeed;
-      }, 2000);
-    };
-
-    container.addEventListener('mouseenter', handleInteractionStart);
-    container.addEventListener('mouseleave', handleInteractionEnd);
-    container.addEventListener('touchstart', handleInteractionStart);
-    container.addEventListener('touchend', handleInteractionEnd);
 
     animationFrameRef.current = requestAnimationFrame(animate);
 
@@ -73,18 +47,11 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      if (resumeTimeoutRef.current) {
-        clearTimeout(resumeTimeoutRef.current);
-      }
-      container.removeEventListener('mouseenter', handleInteractionStart);
-      container.removeEventListener('mouseleave', handleInteractionEnd);
-      container.removeEventListener('touchstart', handleInteractionStart);
-      container.removeEventListener('touchend', handleInteractionEnd);
     };
-  }, [currentSpeed]);
+  }, []);
 
   return (
-    <div className="relative">
+    <div className="relative cursor-pointer select-none" onClick={() => setPaused(p => !p)} title={paused ? 'Click to resume' : 'Click to pause'}>
       <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-stone-50 to-transparent z-10 pointer-events-none" />
       <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-stone-50 to-transparent z-10 pointer-events-none" />
 
@@ -92,7 +59,7 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
         ref={scrollRef}
         className="flex gap-6 overflow-x-auto scrollbar-hide"
         style={{
-          cursor: 'default',
+          cursor: 'inherit',
           WebkitOverflowScrolling: 'touch',
         }}
       >
@@ -111,6 +78,14 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
           </div>
         ))}
       </div>
+
+      {paused && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+          <div className="bg-black/50 text-white text-sm font-medium px-4 py-2 rounded-full backdrop-blur-sm">
+            Paused — click to resume
+          </div>
+        </div>
+      )}
 
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
