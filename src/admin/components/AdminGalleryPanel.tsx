@@ -51,8 +51,10 @@ export default function AdminGalleryPanel() {
 
         if (!uploadError) {
           const { data } = supabase.storage.from('admin-gallery').getPublicUrl(path);
+          const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
           await supabase.from('gallery_images').insert({
             image_url: data.publicUrl,
+            title: baseName || 'Gallery Image',
             alt_text: null,
             service_id: 'general',
             position: currentMax + idx + 1,
