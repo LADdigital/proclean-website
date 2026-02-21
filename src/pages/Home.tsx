@@ -133,7 +133,7 @@ export default function Home() {
           <img
             src={siteContent.images.hero.src}
             alt={siteContent.images.hero.alt}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain opacity-70"
           />
           <div
             className="absolute inset-0"
