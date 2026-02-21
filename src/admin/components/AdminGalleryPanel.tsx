@@ -6,6 +6,7 @@ import { useToast } from '../../components/ui/Toast';
 interface GalleryImage {
   id: string;
   image_url: string;
+  title: string;
   alt_text: string | null;
   service_id: string;
   position: number;
@@ -105,10 +106,17 @@ export default function AdminGalleryPanel() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-bold text-white">Gallery</h2>
         <span className="text-stone-400 text-sm">{images.length} photo{images.length !== 1 ? 's' : ''}</span>
       </div>
+      <p className="text-stone-500 text-xs mb-6">
+        Photos uploaded here appear live on the{' '}
+        <a href="/gallery" target="_blank" rel="noopener noreferrer" className="text-[#B91C1C] hover:underline">
+          public gallery page
+        </a>
+        . Deleting a photo here removes it from the site immediately.
+      </p>
 
       <div className="p-5 rounded-2xl bg-[#2a2a2a] border border-stone-700 mb-6">
         <h3 className="text-sm font-semibold text-white mb-4">Upload Photos</h3>
@@ -152,11 +160,11 @@ export default function AdminGalleryPanel() {
             <div key={image.id} className="relative group rounded-xl overflow-hidden aspect-square bg-stone-800">
               <img
                 src={image.image_url}
-                alt={image.alt_text ?? 'Gallery image'}
+                alt={image.alt_text ?? image.title ?? 'Gallery image'}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors flex flex-col items-center justify-center gap-2">
                 <button
                   onClick={() => setDeleteTarget(image)}
                   className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1.5 rounded-lg bg-[#B91C1C] text-white text-xs font-medium"
@@ -164,11 +172,9 @@ export default function AdminGalleryPanel() {
                   Delete
                 </button>
               </div>
-              {image.alt_text && (
-                <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5 bg-black/60 text-white text-xs truncate">
-                  {image.alt_text}
-                </div>
-              )}
+              <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5 bg-black/60 text-white text-xs truncate opacity-0 group-hover:opacity-100 transition-opacity">
+                {image.title || image.alt_text || 'Gallery image'}
+              </div>
             </div>
           ))}
         </div>
