@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
+import { useToast } from '../../components/ui/Toast';
 
 interface GalleryImage {
   id: string;
@@ -18,6 +19,7 @@ export default function AdminGalleryPanel() {
   const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<GalleryImage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const toast = useToast();
 
   useEffect(() => {
     fetchImages();
@@ -40,6 +42,7 @@ export default function AdminGalleryPanel() {
     setUploadProgress({ done: 0, total: files.length });
 
     const currentMax = images.length > 0 ? Math.max(...images.map(i => i.position)) : 0;
+    let failedCount = 0;
 
     await Promise.all(
       files.map(async (file, idx) => {
@@ -49,16 +52,19 @@ export default function AdminGalleryPanel() {
           .from('admin-gallery')
           .upload(path, file, { upsert: true });
 
-        if (!uploadError) {
+        if (uploadError) {
+          failedCount++;
+        } else {
           const { data } = supabase.storage.from('admin-gallery').getPublicUrl(path);
           const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-          await supabase.from('gallery_images').insert({
+          const { error: insertError } = await supabase.from('gallery_images').insert({
             image_url: data.publicUrl,
             title: baseName || 'Gallery Image',
             alt_text: null,
             service_id: 'general',
             position: currentMax + idx + 1,
           });
+          if (insertError) failedCount++;
         }
 
         setUploadProgress(prev => prev ? { ...prev, done: prev.done + 1 } : null);
@@ -69,13 +75,32 @@ export default function AdminGalleryPanel() {
     setUploadProgress(null);
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
+
+    const succeeded = files.length - failedCount;
+    if (failedCount > 0 && succeeded === 0) {
+      toast.show(`Upload failed. Please try again.`);
+    } else if (failedCount > 0) {
+      toast.show(`${succeeded} photo${succeeded !== 1 ? 's' : ''} uploaded, ${failedCount} failed.`);
+    } else {
+      toast.show(`${succeeded} photo${succeeded !== 1 ? 's' : ''} uploaded successfully.`, 'success');
+    }
   }
 
   async function confirmDelete() {
     if (!deleteTarget) return;
+
+    const url = deleteTarget.image_url;
+    const storagePrefix = '/object/public/admin-gallery/';
+    const storageIdx = url.indexOf(storagePrefix);
+    if (storageIdx !== -1) {
+      const filePath = url.slice(storageIdx + storagePrefix.length);
+      await supabase.storage.from('admin-gallery').remove([filePath]);
+    }
+
     await supabase.from('gallery_images').delete().eq('id', deleteTarget.id);
     setImages(prev => prev.filter(i => i.id !== deleteTarget.id));
     setDeleteTarget(null);
+    toast.show('Photo deleted.', 'success');
   }
 
   return (
