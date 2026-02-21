@@ -135,8 +135,12 @@ export default function Home() {
             alt={siteContent.images.hero.alt}
             className="w-full h-full object-contain"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/85 via-brand-charcoal/60 to-brand-charcoal/45" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-transparent to-brand-charcoal/40" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(ellipse at top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 40%, transparent 70%), linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 80%)`
+            }}
+          />
         </div>
 
         <div className="relative z-10 w-full" style={contentTransform}>
