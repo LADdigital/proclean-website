@@ -498,7 +498,7 @@ export default function Home() {
                 <h3 className="font-semibold mb-1">Business Hours</h3>
                 <div className="text-sm text-stone-400 space-y-0.5">
                   <p>{CONTACT.hours.weekday}</p>
-                  <p>{CONTACT.hours.saturday}</p>
+                  {CONTACT.hours.saturday && <p>{CONTACT.hours.saturday}</p>}
                   <p>{CONTACT.hours.sunday}</p>
                 </div>
               </div>

@@ -247,7 +247,7 @@ export default function Contact() {
                         <p className="text-sm font-semibold text-brand-charcoal">Business Hours</p>
                         <div className="text-sm text-stone-500 space-y-0.5 mt-1">
                           <p>{CONTACT.hours.weekday}</p>
-                          <p>{CONTACT.hours.saturday}</p>
+                          {CONTACT.hours.saturday && <p>{CONTACT.hours.saturday}</p>}
                           <p className="text-brand-red font-medium">{CONTACT.hours.sunday}</p>
                         </div>
                       </div>

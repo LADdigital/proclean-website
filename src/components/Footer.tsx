@@ -102,7 +102,7 @@ export default function Footer() {
                 <Clock className="w-4 h-4 mt-0.5 shrink-0" />
                 <div>
                   <p>{CONTACT.hours.weekday}</p>
-                  <p>{CONTACT.hours.saturday}</p>
+                  {CONTACT.hours.saturday && <p>{CONTACT.hours.saturday}</p>}
                   <p>{CONTACT.hours.sunday}</p>
                 </div>
               </li>
