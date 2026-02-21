@@ -20,7 +20,7 @@ export const CONTACT = {
   instagram: 'https://www.instagram.com/procleanautoyakima?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
   facebook: 'https://www.facebook.com/ProCleanAutoDetail',
   hours: {
-    weekday: 'Monday - Friday: 8:00AM - 5:30PM',
+    weekday: 'Monday - Saturday: 8:00AM - 5:30PM',
     saturday: 'Saturday: 9:00AM - 4:00PM',
     sunday: 'Sunday: Closed',
   },
