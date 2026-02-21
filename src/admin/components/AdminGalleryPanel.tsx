@@ -145,7 +145,7 @@ export default function AdminGalleryPanel() {
           onChange={handleUpload}
           className="hidden"
         />
-        <p className="text-xs text-stone-500 mt-2">You can select multiple photos at once</p>
+        <p className="text-xs text-stone-500 mt-2">Multiple photos supported — up to 50MB each. Full resolution, no compression.</p>
       </div>
 
       {loading ? (
