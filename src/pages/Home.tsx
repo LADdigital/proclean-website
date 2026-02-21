@@ -7,6 +7,7 @@ import {
   Clock,
   MapPin,
 } from 'lucide-react';
+import { prefersReducedMotion } from '../utils/animations';
 import { Link } from 'react-router-dom';
 import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
@@ -76,6 +77,10 @@ const serviceIcons: Record<string, React.ReactNode> = {
 export default function Home() {
   const animRef = useScrollAnimation();
   const heroRef = useRef<HTMLDivElement>(null);
+  const reviewsScrollRef = useRef<HTMLDivElement>(null);
+  const reviewsAnimFrameRef = useRef<number>();
+  const [reviewsPaused, setReviewsPaused] = useState(false);
+  const reviewsPausedRef = useRef(false);
   const { show } = useToast();
   const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>(siteContent.images.gallery);
 
@@ -90,6 +95,29 @@ export default function Home() {
         }
       });
   }, []);
+  useEffect(() => {
+    reviewsPausedRef.current = reviewsPaused;
+  }, [reviewsPaused]);
+
+  useEffect(() => {
+    const container = reviewsScrollRef.current;
+    if (!container || prefersReducedMotion()) return;
+    const speed = 0.5;
+    const animate = () => {
+      if (container && !reviewsPausedRef.current) {
+        container.scrollLeft += speed;
+        if (container.scrollLeft >= container.scrollWidth / 3) {
+          container.scrollLeft = 0;
+        }
+      }
+      reviewsAnimFrameRef.current = requestAnimationFrame(animate);
+    };
+    reviewsAnimFrameRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (reviewsAnimFrameRef.current) cancelAnimationFrame(reviewsAnimFrameRef.current);
+    };
+  }, []);
+
   const { isFlipped, handleFlip } = useBadgeFlip((msg) => show(msg));
   useHeroReflection(heroRef);
   const { backgroundTransform, contentTransform } = useHeroDepth();
@@ -174,6 +202,101 @@ export default function Home() {
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent hidden lg:block" />
+      </section>
+
+      <section className="py-16 sm:py-20 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+          <div className="text-center fade-in">
+            <p className="text-brand-red font-semibold text-sm uppercase tracking-wider mb-3">
+              Customer Reviews
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-charcoal mb-4">
+              What Yakima Drivers Say
+            </h2>
+            <p className="text-stone-500 max-w-xl mx-auto">
+              Real feedback from real customers. See what people in Yakima and the surrounding
+              areas have to say about their experience with Pro Clean.
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="relative cursor-pointer select-none"
+          onClick={() => setReviewsPaused(p => !p)}
+          title={reviewsPaused ? 'Click to resume' : 'Click to pause'}
+        >
+          <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+          <div
+            ref={reviewsScrollRef}
+            className="flex gap-6 overflow-x-auto"
+            style={{
+              cursor: 'inherit',
+              WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+            }}
+          >
+            {(() => {
+              const reviews = [
+                { name: 'Roy Simmons', initial: 'R', rating: 5, timeAgo: '4 months ago', text: 'I give these guys five stars for the restoration of my 2013 Subaru headlight lens They look new', color: 'bg-sky-600' },
+                { name: 'Paula', initial: 'P', rating: 5, timeAgo: '5 months ago', text: 'I had my outback washed, waxed, detailed, total inside washed, and the headlights cleared of all the foggy stuff. I walked away with a new car. Super nice professional caring people. I highly recommend these people and this company.', color: 'bg-teal-600' },
+                { name: 'Jose Herrera', initial: 'J', rating: 5, timeAgo: '6 months ago', text: 'Took my blazer in for a hand wash and the guys did an exceptional job. Great customer service! I will be bringing my car back', color: 'bg-stone-500' },
+                { name: 'Maddie Martinez', initial: 'M', rating: 5, timeAgo: '8 months ago', text: 'Beyond happy with my experience! First time customer and will be coming back for all my detail needs. My car looked cleaner and newer from when I took it out the lot.', color: 'bg-brand-orange' },
+                { name: 'Veronica Herrera', initial: 'V', rating: 5, timeAgo: '8 months ago', text: 'Highly recommend pro clean! I went in for a detail and my car came out looking brand new. I also had a few dents, and was able to get that serviced in the back the same day. Thank you!', color: 'bg-blue-600' },
+                { name: 'Dan R.', initial: 'D', rating: 5, timeAgo: 'Edited 9 months ago', text: 'I love this place. Excellent staff, excellent workers, excellent auto detailing.', color: 'bg-brand-red', badge: 'Local Guide' },
+              ];
+              return [...reviews, ...reviews, ...reviews];
+            })().map((review, i) => (
+              <div key={i} className="shrink-0 w-80 p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-brand-red/30 hover:shadow-lg transition-all duration-200">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className={`${review.color} w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0`}>
+                    {review.initial}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-semibold text-brand-charcoal text-sm">{review.name}</p>
+                      {review.badge && (
+                        <span className="text-xs bg-brand-orange/10 text-brand-orange font-medium px-2 py-0.5 rounded-full">
+                          {review.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-stone-400">{review.timeAgo}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[...Array(review.rating)].map((_, j) => (
+                    <Star key={j} className="w-3.5 h-3.5 text-brand-orange fill-brand-orange" />
+                  ))}
+                </div>
+                <p className="text-sm text-stone-600 leading-relaxed line-clamp-4">
+                  "{review.text}"
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {reviewsPaused && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+              <div className="bg-black/50 text-white text-sm font-medium px-4 py-2 rounded-full backdrop-blur-sm">
+                Paused — click to resume
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center mt-10 px-4">
+          <a
+            href="https://www.google.com/search?sca_esv=f736710e6b71d7f5&sxsrf=ANbL-n7LclPH_BUKJRql8CUzrk0Bae8fug:1771042594610&si=AL3DRZHrmvnFAVQPOO2Bzhf8AX9KZZ6raUI_dT7DG_z0kV2_x9vzxBY3O39_3Cy0X4Ep5F-xYR--JdlcO1YQyqjTz4axWfr-_-oiMOLCBlAghnvQcf3uKKxWW0ldlBUQnZ2slq9JaA_ujIijal4-khil1zinerD-eg%3D%3D&q=Pro+Clean+Auto+Detail+Systems+Reviews&sa=X&ved=2ahUKEwjzkO_lj9iSAxW0IzQIHXu5BYkQ0bkNegQIHhAH&biw=1920&bih=992&dpr=2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all"
+          >
+            See All Reviews on Google <ArrowRight className="w-5 h-5" />
+          </a>
+        </div>
       </section>
 
       <section ref={servicesReveal.ref} className={`py-20 sm:py-28 bg-white ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
@@ -309,122 +432,6 @@ export default function Home() {
                 className="w-full h-full object-contain"
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 sm:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 fade-in">
-            <p className="text-brand-red font-semibold text-sm uppercase tracking-wider mb-3">
-              Customer Reviews
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-charcoal mb-4">
-              What Yakima Drivers Say
-            </h2>
-            <p className="text-stone-500 max-w-xl mx-auto">
-              Real feedback from real customers. See what people in Yakima and the surrounding
-              areas have to say about their experience with Pro Clean.
-            </p>
-          </div>
-
-          <div className="overflow-x-auto pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-6 w-max">
-              {[
-                {
-                  name: 'Roy Simmons',
-                  initial: 'R',
-                  rating: 5,
-                  timeAgo: '4 months ago',
-                  text: 'I give these guys five stars for the restoration of my 2013 Subaru headlight lens They look new',
-                  color: 'bg-purple-500'
-                },
-                {
-                  name: 'Paula',
-                  initial: 'P',
-                  rating: 5,
-                  timeAgo: '5 months ago',
-                  text: 'I had my outback washed, waxed, detailed, total inside washed, and the headlights cleared of all the foggy stuff. I walked away with a new car. Super nice professional caring people. I highly recommend these people and this company.',
-                  color: 'bg-purple-400'
-                },
-                {
-                  name: 'Jose Herrera',
-                  initial: 'J',
-                  rating: 5,
-                  timeAgo: '6 months ago',
-                  text: 'Took my blazer in for a hand wash and the guys did an exceptional job. Great customer service! I will be bringing my car back',
-                  color: 'bg-stone-500'
-                },
-                {
-                  name: 'Maddie Martinez',
-                  initial: 'M',
-                  rating: 5,
-                  timeAgo: '8 months ago',
-                  text: 'Beyond happy with my experience! First time customer and will be coming back for all my detail needs. My car looked cleaner and newer from when I took it out the lot.',
-                  color: 'bg-brand-orange'
-                },
-                {
-                  name: 'Veronica Herrera',
-                  initial: 'V',
-                  rating: 5,
-                  timeAgo: '8 months ago',
-                  text: 'Highly recommend pro clean! I went in for a detail and my car came out looking brand new. I also had a few dents, and was able to get that serviced in the back the same day. Thank you!',
-                  color: 'bg-blue-500'
-                },
-                {
-                  name: 'Dan R.',
-                  initial: 'D',
-                  rating: 5,
-                  timeAgo: 'Edited 9 months ago',
-                  text: 'I love this place. Excellent staff, excellent workers, excellent auto detailing.',
-                  color: 'bg-brand-orange',
-                  badge: 'Local Guide'
-                }
-              ].map((review, i) => (
-                <div key={i} className="shrink-0 w-96 p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-brand-red/30 hover:shadow-lg btn-apple-hover">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className={`${review.color} w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0`}>
-                      {review.initial}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-brand-charcoal">{review.name}</p>
-                        {review.badge && (
-                          <span className="text-xs bg-brand-orange/10 text-brand-orange font-medium px-2 py-0.5 rounded-full">
-                            {review.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-stone-400">{review.timeAgo}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(review.rating)].map((_, j) => (
-                      <Star key={j} className="w-4 h-4 text-brand-orange fill-brand-orange" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-stone-600 leading-relaxed line-clamp-4">
-                    "{review.text}"
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center mt-6">
-              <p className="text-xs text-stone-400 text-center">
-                Scroll to see more reviews →
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center mt-10 fade-in">
-            <a
-              href="https://www.google.com/search?sca_esv=f736710e6b71d7f5&sxsrf=ANbL-n7LclPH_BUKJRql8CUzrk0Bae8fug:1771042594610&si=AL3DRZHrmvnFAVQPOO2Bzhf8AX9KZZ6raUI_dT7DG_z0kV2_x9vzxBY3O39_3Cy0X4Ep5F-xYR--JdlcO1YQyqjTz4axWfr-_-oiMOLCBlAghnvQcf3uKKxWW0ldlBUQnZ2slq9JaA_ujIijal4-khil1zinerD-eg%3D%3D&q=Pro+Clean+Auto+Detail+Systems+Reviews&sa=X&ved=2ahUKEwjzkO_lj9iSAxW0IzQIHXu5BYkQ0bkNegQIHhAH&biw=1920&bih=992&dpr=2"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all"
-            >
-              See All Reviews on Google <ArrowRight className="w-5 h-5" />
-            </a>
           </div>
         </div>
       </section>
