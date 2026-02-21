@@ -14,7 +14,7 @@ import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { supabase } from '../lib/supabase';
-import { useHeroReflection, useBadgeFlip } from '../features/easterEggs/easterEggs';
+import { useBadgeFlip } from '../features/easterEggs/easterEggs';
 import { useToast } from '../components/ui/Toast';
 import { CONTACT } from '../data/services';
 import { siteContent } from '../content/siteContent';
@@ -78,6 +78,7 @@ export default function Home() {
   const animRef = useScrollAnimation();
   const heroRef = useRef<HTMLDivElement>(null);
   const reviewsScrollRef = useRef<HTMLDivElement>(null);
+  const reviewsPositionRef = useRef(0);
   const reviewsAnimFrameRef = useRef<number>();
   const [reviewsPaused, setReviewsPaused] = useState(false);
   const reviewsPausedRef = useRef(false);
@@ -102,13 +103,17 @@ export default function Home() {
   useEffect(() => {
     const container = reviewsScrollRef.current;
     if (!container || prefersReducedMotion()) return;
-    const speed = 0.5;
+    const ITEM_WIDTH = 320 + 24;
+    const REVIEW_COUNT = 6;
+    const totalWidth = REVIEW_COUNT * ITEM_WIDTH;
+    const speed = 0.4;
     const animate = () => {
-      if (container && !reviewsPausedRef.current) {
-        container.scrollLeft += speed;
-        if (container.scrollLeft >= container.scrollWidth / 3) {
-          container.scrollLeft = 0;
+      if (!reviewsPausedRef.current) {
+        reviewsPositionRef.current += speed;
+        if (reviewsPositionRef.current >= totalWidth) {
+          reviewsPositionRef.current -= totalWidth;
         }
+        container.style.transform = `translateX(-${reviewsPositionRef.current}px)`;
       }
       reviewsAnimFrameRef.current = requestAnimationFrame(animate);
     };
@@ -119,7 +124,6 @@ export default function Home() {
   }, []);
 
   const { isFlipped, handleFlip } = useBadgeFlip((msg) => show(msg));
-  useHeroReflection(heroRef);
   const { backgroundTransform, contentTransform } = useHeroDepth();
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
@@ -221,7 +225,7 @@ export default function Home() {
         </div>
 
         <div
-          className="relative cursor-pointer select-none"
+          className="relative cursor-pointer select-none overflow-hidden"
           onClick={() => setReviewsPaused(p => !p)}
           title={reviewsPaused ? 'Click to resume' : 'Click to pause'}
         >
@@ -230,12 +234,10 @@ export default function Home() {
 
           <div
             ref={reviewsScrollRef}
-            className="flex gap-6 overflow-x-auto"
+            className="flex gap-6"
             style={{
-              cursor: 'inherit',
-              WebkitOverflowScrolling: 'touch',
-              msOverflowStyle: 'none',
-              scrollbarWidth: 'none',
+              width: 'max-content',
+              willChange: 'transform',
             }}
           >
             {(() => {

@@ -11,7 +11,8 @@ interface EnhancedCarouselProps {
 }
 
 export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const positionRef = useRef(0);
   const animationFrameRef = useRef<number>();
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(false);
@@ -23,20 +24,20 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
   }, [paused]);
 
   useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
+    const track = trackRef.current;
+    if (!track || prefersReducedMotion()) return;
 
-    if (prefersReducedMotion()) return;
-
-    const speed = 0.5;
+    const ITEM_WIDTH = 320 + 24;
+    const totalWidth = images.length * ITEM_WIDTH;
+    const speed = 0.4;
 
     const animate = () => {
-      if (container && !pausedRef.current) {
-        container.scrollLeft += speed;
-
-        if (container.scrollLeft >= container.scrollWidth / 3) {
-          container.scrollLeft = 0;
+      if (!pausedRef.current) {
+        positionRef.current += speed;
+        if (positionRef.current >= totalWidth) {
+          positionRef.current -= totalWidth;
         }
+        track.style.transform = `translateX(-${positionRef.current}px)`;
       }
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -48,32 +49,36 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [images.length]);
 
   return (
-    <div className="relative cursor-pointer select-none" onClick={() => setPaused(p => !p)} title={paused ? 'Click to resume' : 'Click to pause'}>
+    <div
+      className="relative cursor-pointer select-none overflow-hidden"
+      onClick={() => setPaused(p => !p)}
+      title={paused ? 'Click to resume' : 'Click to pause'}
+    >
       <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-stone-50 to-transparent z-10 pointer-events-none" />
       <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-stone-50 to-transparent z-10 pointer-events-none" />
 
       <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scrollbar-hide"
+        ref={trackRef}
+        className="flex gap-6"
         style={{
-          cursor: 'inherit',
-          WebkitOverflowScrolling: 'touch',
+          willChange: 'transform',
+          width: 'max-content',
         }}
       >
         {duplicatedImages.map((image, index) => (
           <div
             key={index}
-            className="flex-shrink-0 w-80 h-64 rounded-2xl overflow-hidden shadow-lg image-hover-apple"
-            style={{ scrollSnapAlign: 'start' }}
+            className="flex-shrink-0 w-80 h-64 rounded-2xl overflow-hidden shadow-lg"
           >
             <img
               src={image.src}
               alt={image.alt}
               className="w-full h-full object-cover"
               draggable={false}
+              loading="lazy"
             />
           </div>
         ))}
@@ -86,16 +91,6 @@ export default function EnhancedCarousel({ images }: EnhancedCarouselProps) {
           </div>
         </div>
       )}
-
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 }

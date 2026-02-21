@@ -1,41 +1,56 @@
 @keyframes reveal-section {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.98);
-    filter: blur(8px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
+    transform: translateY(0);
   }
 }
 
 .reveal-hidden {
   opacity: 0;
-  transform: translateY(40px) scale(0.98);
-  filter: blur(8px);
+  transform: translateY(24px);
+  will-change: opacity, transform;
 }
 
 .reveal-visible {
-  animation: reveal-section 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: reveal-section 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform;
 }
 
 .apple-transition {
-  transition: all 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .apple-transition-medium {
-  transition: all 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .apple-transition-large {
-  transition: all 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-apple-hover {
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .btn-apple-hover:hover {
@@ -49,13 +64,12 @@
 
 .image-hover-apple {
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-              filter 300ms cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .image-hover-apple:hover {
   transform: scale(1.03);
-  filter: brightness(1.03);
 }
 
 .image-hover-apple:active {
@@ -75,16 +89,32 @@
   .reveal-hidden {
     opacity: 1;
     transform: none;
-    filter: none;
+    will-change: auto;
   }
 
   .reveal-visible {
     animation: none;
+    will-change: auto;
+  }
+
+  .btn-apple-hover,
+  .image-hover-apple {
+    will-change: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .reveal-hidden {
+    transform: translateY(16px);
   }
 }
 
 .header-scroll-transform {
-  transition: all 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+              backdrop-filter 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .stagger-item-0 {
@@ -92,23 +122,23 @@
 }
 
 .stagger-item-1 {
-  animation-delay: 80ms;
+  animation-delay: 60ms;
 }
 
 .stagger-item-2 {
-  animation-delay: 160ms;
+  animation-delay: 120ms;
 }
 
 .stagger-item-3 {
-  animation-delay: 240ms;
+  animation-delay: 180ms;
 }
 
 .stagger-item-4 {
-  animation-delay: 320ms;
+  animation-delay: 240ms;
 }
 
 .stagger-item-5 {
-  animation-delay: 400ms;
+  animation-delay: 300ms;
 }
 
 @keyframes modal-fade-in {
@@ -124,10 +154,12 @@
 
 .modal-enter {
   animation: modal-fade-in 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform;
 }
 
 .backdrop-enter {
   animation: fade-in 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity;
 }
 
 @keyframes fade-in {

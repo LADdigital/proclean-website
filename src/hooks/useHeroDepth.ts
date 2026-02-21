@@ -1,30 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { clamp, prefersReducedMotion } from '../utils/animations';
 
 const MAX_SCROLL = 300;
 
+function isDesktop(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth >= 1024;
+}
+
 export function useHeroDepth() {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const ticking = useRef(false);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-
-    let ticking = false;
+    if (prefersReducedMotion() || !isDesktop()) return;
 
     const handleScroll = () => {
-      if (!ticking) {
+      if (!ticking.current) {
         requestAnimationFrame(() => {
           const scroll = window.scrollY;
           const progress = clamp(scroll / MAX_SCROLL, 0, 1);
           setScrollProgress(progress);
-          ticking = false;
+          ticking.current = false;
         });
-        ticking = true;
+        ticking.current = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
