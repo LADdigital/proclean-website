@@ -1,13 +1,31 @@
 import { useEffect, useState, useRef } from 'react';
 import { prefersReducedMotion } from '../utils/animations';
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  return isDesktop;
+}
+
 export default function DeveloperSignature() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasRevealed, setHasRevealed] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const isDesktop = useIsDesktop();
+
+  const animated = isDesktop && !prefersReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
+    if (!animated) {
       setIsVisible(true);
       setHasRevealed(true);
       return;
@@ -41,7 +59,7 @@ export default function DeveloperSignature() {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [hasRevealed]);
+  }, [animated, hasRevealed]);
 
   return (
     <div className="bg-brand-charcoal pt-20 pb-8">
@@ -51,12 +69,12 @@ export default function DeveloperSignature() {
             href="https://laddigitalofyakima.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="mb-10 transition-all duration-[800ms]"
-            style={{
-              transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            className="mb-10"
+            style={animated ? {
+              transition: 'opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 800ms cubic-bezier(0.22, 1, 0.36, 1)',
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-            }}
+            } : undefined}
           >
             <img
               src="/3B18F411-3D29-485D-B553-28675ABEFC9D.png"
@@ -84,12 +102,12 @@ export default function DeveloperSignature() {
             href="https://laddigitalofyakima.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="group transition-all duration-[240ms]"
-            style={{
-              transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            className="group"
+            style={animated ? {
+              transition: 'opacity 240ms cubic-bezier(0.22, 1, 0.36, 1), transform 240ms cubic-bezier(0.22, 1, 0.36, 1)',
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-            }}
+            } : undefined}
           >
             <span
               className="text-[13px] tracking-[0.05em] font-normal group-hover:opacity-100 transition-opacity duration-[600ms] group-hover:underline decoration-1 underline-offset-4"
