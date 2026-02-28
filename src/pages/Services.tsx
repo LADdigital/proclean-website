@@ -235,7 +235,7 @@ export default function Services() {
                     </div>
 
                     {hasImage && (
-                      <div className={`fade-in ${reverseLayout ? 'lg:order-1' : ''}`} style={{ transitionDelay: '150ms' }}>
+                      <div className={`fade-in ${reverseLayout ? 'lg:order-1' : ''}`} style={{ transitionDelay: '127ms' }}>
                         {isEditorMode ? (
                           <ServiceImageUpload
                             serviceId={anchorId}
