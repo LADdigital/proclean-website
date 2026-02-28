@@ -135,12 +135,12 @@ export default function Home() {
             alt={siteContent.images.hero.alt}
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/60 via-transparent to-brand-charcoal/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/40 via-transparent to-brand-charcoal/20" />
+          <div className="absolute inset-0 bg-brand-charcoal/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/40 via-transparent to-brand-charcoal/70" />
         </div>
 
         <div className="relative z-10 w-full flex flex-col" style={{ minHeight: '100vh', ...contentTransform }}>
-          <div className="flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-36">
+          <div className="flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-48">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
                 Come See the Future of the{' '}
