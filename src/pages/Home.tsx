@@ -21,7 +21,6 @@ import { siteContent } from '../content/siteContent';
 import { useHeroDepth } from '../hooks/useHeroDepth';
 import { useRevealAnimation } from '../hooks/useRevealAnimation';
 import { useAdminServices } from '../hooks/useAdminServices';
-import ServiceCarousel from '../components/ServiceCarousel';
 
 const svgProps = {
   width: 24,
@@ -129,7 +128,7 @@ export default function Home() {
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
   const galleryReveal = useRevealAnimation();
-  const { services, homeServices, loading: servicesLoading } = useAdminServices();
+  const { homeServices, loading: servicesLoading } = useAdminServices();
 
   return (
     <div ref={animRef}>
@@ -145,65 +144,51 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full" style={contentTransform}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-start justify-between gap-8">
-            <div className="max-w-2xl lg:py-20">
-              <div
-                className={`badge-flip-container inline-block mb-4 sm:mb-6 ${isFlipped ? 'flipped' : ''}`}
-                onClick={handleFlip}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
-              >
-                <div className="badge-flip-inner">
-                  <div className="badge-flip-front inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
-                    <Star className="w-4 h-4 text-brand-orange-light" />
-                    Over 15 Years Serving Yakima
-                  </div>
-                  <div className="badge-flip-back px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
-                    Built on Reputation. Not Ads.
-                  </div>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center lg:py-20 py-8">
+            <div
+              className={`badge-flip-container inline-block mb-6 sm:mb-8 ${isFlipped ? 'flipped' : ''}`}
+              onClick={handleFlip}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
+            >
+              <div className="badge-flip-inner">
+                <div className="badge-flip-front inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
+                  <Star className="w-4 h-4 text-brand-orange-light" />
+                  Over 15 Years Serving Yakima
+                </div>
+                <div className="badge-flip-back px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
+                  Built on Reputation. Not Ads.
                 </div>
               </div>
-
-              <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-4 sm:mb-6">
-                Yakima's Premier{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
-                  Auto Detailing
-                </span>{' '}
-                Specialists
-              </h1>
-
-              <p className="text-base sm:text-lg lg:text-xl text-stone-300 leading-relaxed mb-6 sm:mb-8 max-w-lg">
-                Professional ceramic coating, paint correction, and full detailing services.
-                Trusted by Yakima drivers since day one.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-                <BookingButton size="lg">
-                  Schedule Your Detail
-                </BookingButton>
-                <a
-                  href={CONTACT.phoneLink}
-                  className="inline-flex items-center gap-2 px-6 py-4 text-white font-semibold border-2 border-white/30 rounded-lg hover:bg-white/10 btn-apple-hover text-sm sm:text-base"
-                >
-                  <Phone className="w-5 h-5" />
-                  Call {CONTACT.phone}
-                </a>
-              </div>
-
-              <div className="mt-8">
-                <SocialLinks variant="light" />
-              </div>
             </div>
 
-            <div className="hidden lg:flex items-start pt-28 shrink-0">
-              <ServiceCarousel services={servicesLoading ? [] : services} loading={servicesLoading} />
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-6 sm:mb-8 tracking-tight">
+              Come See the Future of the{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
+                Auto Detail Industry
+              </span>
+            </h1>
+
+            <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mb-6 sm:mb-8" />
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8">
+              <BookingButton size="lg">
+                Schedule Your Detail
+              </BookingButton>
+              <a
+                href={CONTACT.phoneLink}
+                className="inline-flex items-center gap-2 px-6 py-4 text-white font-semibold border-2 border-white/30 rounded-lg hover:bg-white/10 btn-apple-hover text-sm sm:text-base"
+              >
+                <Phone className="w-5 h-5" />
+                Call {CONTACT.phone}
+              </a>
             </div>
-            </div>
+
+            <SocialLinks variant="light" />
           </div>
 
-          <div className="lg:hidden mt-8 sm:mt-12">
+          <div className="lg:hidden">
             <img
               src={siteContent.images.hero.src}
               alt={siteContent.images.hero.alt}
