@@ -5,26 +5,16 @@ interface LoadingScreenProps {
   onDone: () => void;
 }
 
-// ─── Timing history ───────────────────────────────────────────────────────────
-// Original:          500 / 4500ms total (80ms rise/fade, 350ms final)
-// After ×1.2 (+20%): 600 / 5400ms total (96ms rise/fade, 420ms final)
-// After ×1.15 (+15%): 690 / 6210ms total (111ms rise/fade, 483ms final)
-// After ÷1.08 (-8%):  639 / 5750ms total (103ms rise/fade, 447ms final)
-// Capped to 5500ms:   550 / 4950ms total (90ms rise/fade, 400ms final)  ← current
-//
-// Services carousel: 8 cards × ~619ms each
-// Per card: 90ms rise + 439ms hold + 90ms fade
-
-const PHASE1_MS = 550;
-const PHASE2_MS = 4950;
+const PHASE1_MS = 400;
+const PHASE2_MS = 4200;
 const TOTAL_MS = PHASE1_MS + PHASE2_MS;
 const CARD_MS = PHASE2_MS / services.length; // ~619ms per card (8 services)
 
-const CARD_RISE_MS = 90;
-const CARD_FADE_MS = 90;
+const CARD_RISE_MS = 75;
+const CARD_FADE_MS = 75;
 const CARD_HOLD_MS = CARD_MS - CARD_RISE_MS - CARD_FADE_MS;
 
-const FINAL_FADE_MS = 400;
+const FINAL_FADE_MS = 350;
 const FINAL_FADE_START = TOTAL_MS - FINAL_FADE_MS;
 
 function easeOutCubic(t: number) {

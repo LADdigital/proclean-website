@@ -157,9 +157,9 @@ export default function Services() {
         </div>
       </section>
 
-      <section className="py-8 bg-white border-b border-stone-200 sticky top-16 sm:top-20 z-30">
+      <section className="py-3 bg-white border-b border-stone-200 sticky top-16 sm:top-20 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
             {navServices.map((service) => (
               <a
                 key={service.id}
