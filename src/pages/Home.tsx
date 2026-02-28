@@ -139,8 +139,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/40 via-transparent to-brand-charcoal/70" />
         </div>
 
-        <div className="relative z-10 w-full flex flex-col" style={{ minHeight: '100vh', ...contentTransform }}>
-          <div className="flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-48">
+        <div className="relative z-10 w-full flex flex-col lg:min-h-screen" style={contentTransform}>
+          <div className="lg:flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-48">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
                 Come See the Future of the{' '}
@@ -160,12 +160,18 @@ export default function Home() {
             />
           </div>
 
-          <div className="pb-12 sm:pb-16 lg:pb-20 pt-8">
+          <div className="pb-12 sm:pb-16 lg:pb-20 pt-6 lg:pt-8">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center gap-6">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 <BookingButton size="lg">
                   Schedule Your Detail
                 </BookingButton>
+                <Link
+                  to="/services"
+                  className="inline-flex items-center gap-2 px-6 py-4 bg-brand-red text-white font-semibold rounded-lg hover:bg-brand-red/90 btn-apple-hover text-sm sm:text-base"
+                >
+                  View Our Services
+                </Link>
                 <a
                   href={CONTACT.phoneLink}
                   className="inline-flex items-center gap-2 px-6 py-4 text-white font-semibold border-2 border-white/30 rounded-lg hover:bg-white/10 btn-apple-hover text-sm sm:text-base"
