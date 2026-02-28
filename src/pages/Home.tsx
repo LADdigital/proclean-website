@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import {
-  Star,
   ArrowRight,
   ChevronRight,
   Phone,
@@ -14,8 +13,6 @@ import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { supabase } from '../lib/supabase';
-import { useBadgeFlip } from '../features/easterEggs/easterEggs';
-import { useToast } from '../components/ui/Toast';
 import { CONTACT } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { useHeroDepth } from '../hooks/useHeroDepth';
@@ -82,7 +79,6 @@ export default function Home() {
   const reviewsAnimFrameRef = useRef<number>();
   const [reviewsPaused, setReviewsPaused] = useState(false);
   const reviewsPausedRef = useRef(false);
-  const { show } = useToast();
   const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>(siteContent.images.gallery);
 
   useEffect(() => {
@@ -123,7 +119,6 @@ export default function Home() {
     };
   }, []);
 
-  const { isFlipped, handleFlip } = useBadgeFlip((msg) => show(msg));
   const { backgroundTransform, contentTransform } = useHeroDepth();
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
@@ -144,33 +139,15 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full" style={contentTransform}>
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center lg:py-20 py-8">
-            <div
-              className={`badge-flip-container inline-block mb-6 sm:mb-8 ${isFlipped ? 'flipped' : ''}`}
-              onClick={handleFlip}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleFlip()}
-            >
-              <div className="badge-flip-inner">
-                <div className="badge-flip-front inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
-                  <Star className="w-4 h-4 text-brand-orange-light" />
-                  Over 15 Years Serving Yakima
-                </div>
-                <div className="badge-flip-back px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium">
-                  Built on Reputation. Not Ads.
-                </div>
-              </div>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-6 sm:mb-8 tracking-tight">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center lg:pt-8 lg:pb-20 pt-0 pb-8">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-6 sm:mb-8 tracking-tight -mt-10 sm:-mt-12 lg:-mt-16">
               Come See the Future of the{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
                 Auto Detail Industry
               </span>
             </h1>
 
-            <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mb-6 sm:mb-8" />
+            <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mb-16 sm:mb-20 lg:mb-24" />
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8">
               <BookingButton size="lg">
