@@ -21,6 +21,7 @@ import { siteContent } from '../content/siteContent';
 import { useHeroDepth } from '../hooks/useHeroDepth';
 import { useRevealAnimation } from '../hooks/useRevealAnimation';
 import { useAdminServices } from '../hooks/useAdminServices';
+import ServiceCarousel from '../components/ServiceCarousel';
 
 const svgProps = {
   width: 24,
@@ -128,7 +129,7 @@ export default function Home() {
   const servicesReveal = useRevealAnimation();
   const whyChooseReveal = useRevealAnimation();
   const galleryReveal = useRevealAnimation();
-  const { homeServices, loading: servicesLoading } = useAdminServices();
+  const { services, homeServices, loading: servicesLoading } = useAdminServices();
 
   return (
     <div ref={animRef}>
@@ -145,6 +146,7 @@ export default function Home() {
 
         <div className="relative z-10 w-full" style={contentTransform}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-start justify-between gap-8">
             <div className="max-w-2xl lg:py-20">
               <div
                 className={`badge-flip-container inline-block mb-4 sm:mb-6 ${isFlipped ? 'flipped' : ''}`}
@@ -193,6 +195,11 @@ export default function Home() {
               <div className="mt-8">
                 <SocialLinks variant="light" />
               </div>
+            </div>
+
+            <div className="hidden lg:flex items-start pt-28 shrink-0">
+              <ServiceCarousel services={servicesLoading ? [] : services} loading={servicesLoading} />
+            </div>
             </div>
           </div>
 
