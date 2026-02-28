@@ -2,13 +2,32 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Send } from 'lucide-react';
 
 const WEBHOOK_URL = import.meta.env.VITE_CHATBOT_WEBHOOK || '';
-const BOOKING_URL = 'https://procleanautodetailing.setmore.com/';
-const BOOK_BUTTON_TAG = '[[SHOW_BOOK_BUTTON]]';
+const DEFAULT_BOOKING_URL = 'https://procleanautodetailing.setmore.com/book';
+const BOOK_BUTTON_PATTERN = /\[SHOW_BOOK_BUTTON:\s*([^\]]+)\]/;
+
+const SERVICE_BOOKING_URLS: Record<string, string> = {
+  'Mid Size SUV/Truck Complete': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=b15ff53ba1790709e7c944d3307dd5ccd09eb932&type=service&staff=SKIP&staffSelected=false',
+  'Full Size SUV/Truck Complete': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=b4e9d667367b1fd152eb0e5077efb8fbf2c7f1df&type=service&staff=SKIP&staffSelected=false',
+  'Car/Small Truck Complete': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=0eaeb1ba0a28c6f8e2dd5247eb29abb17019e1d8&type=service&staff=SKIP&staffSelected=false',
+  'Mini Detail': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=s946e1483395536521&type=service&staff=SKIP&staffSelected=false',
+  'Car/Small Truck Interior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=392a38de25ae35b788bc21134304e0b36b92eb5f&type=service&staff=SKIP&staffSelected=false',
+  'Mid Size SUV/Truck Interior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=4c9fc8e62141d84f058d576f135e94975309ad4e&type=service&staff=SKIP&staffSelected=false',
+  'Full Size SUV/Truck Interior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=dc7387e8caa777cbe987fb46eedb130038bd2012&type=service&staff=SKIP&staffSelected=false',
+  'Car/Small Truck Exterior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=28a6eda1c7711e836f33f9b76dfb97df1775baa6&type=service&staff=SKIP&staffSelected=false',
+  'Mid Size SUV/Truck Exterior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=03e29ea5fba2f4a975b931b9a1a2d4170df701c7&type=service&staff=SKIP&staffSelected=false',
+  'Large SUV/Truck Exterior Only': 'https://procleanautodetailing.setmore.com/book?step=time-slot&products=47fc942f9af14961ca1439542ea8bf0182fa2c6a&type=service&staff=SKIP&staffSelected=false',
+};
+
+function resolveBookingUrl(serviceName: string): string {
+  const trimmed = serviceName.trim();
+  return SERVICE_BOOKING_URLS[trimmed] ?? DEFAULT_BOOKING_URL;
+}
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   showBookButton?: boolean;
+  bookingUrl?: string;
 }
 
 interface WebhookResponse {
@@ -53,14 +72,16 @@ function sanitizeHTML(html: string): string {
   return div.innerHTML;
 }
 
-function parseResponse(response: WebhookResponse): { content: string; showBookButton: boolean } {
+function parseResponse(response: WebhookResponse): { content: string; showBookButton: boolean; bookingUrl: string } {
   let content = response.bot_message || '';
-  const showBookButton = content.includes(BOOK_BUTTON_TAG);
+  const match = content.match(BOOK_BUTTON_PATTERN);
+  const showBookButton = match !== null;
+  const bookingUrl = match ? resolveBookingUrl(match[1]) : DEFAULT_BOOKING_URL;
 
-  content = content.replace(BOOK_BUTTON_TAG, '').trim();
+  content = content.replace(BOOK_BUTTON_PATTERN, '').trim();
   content = sanitizeHTML(content);
 
-  return { content, showBookButton };
+  return { content, showBookButton, bookingUrl };
 }
 
 function generateUUID(): string {
@@ -130,7 +151,7 @@ function MessageBubble({
 
       {message.showBookButton && (
         <a
-          href={BOOKING_URL}
+          href={message.bookingUrl ?? DEFAULT_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-red to-brand-orange text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-red-900/30 transition-all text-center"
@@ -234,8 +255,8 @@ export default function Chatbot() {
     let assistantMessage: Message;
 
     if (response && response.bot_message) {
-      const { content, showBookButton } = parseResponse(response);
-      assistantMessage = { role: 'assistant', content, showBookButton };
+      const { content, showBookButton, bookingUrl } = parseResponse(response);
+      assistantMessage = { role: 'assistant', content, showBookButton, bookingUrl };
     } else {
       assistantMessage = {
         role: 'assistant',
