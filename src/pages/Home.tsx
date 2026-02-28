@@ -160,7 +160,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="pb-12 sm:pb-16 lg:pb-20 pt-6 lg:pt-8">
+          <div className="pb-6 sm:pb-10 lg:pb-20 pt-3 lg:pt-8">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center gap-6">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 <BookingButton size="lg">
