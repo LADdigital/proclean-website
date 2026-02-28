@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import {
+  Star,
   ArrowRight,
   ChevronRight,
   Phone,
