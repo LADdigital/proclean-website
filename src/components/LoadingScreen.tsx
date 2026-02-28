@@ -5,21 +5,23 @@ interface LoadingScreenProps {
   onDone: () => void;
 }
 
-// Phase 1: 500ms logo fade-in then fade-out
-// Phase 2: 4500ms carousel — 10 services, 450ms each
-// Each card: 80ms ease-in from bottom, 290ms hold, 80ms fade-out at top
-// Total: 5000ms
+// ─── Timing (all values are original × 1.2 for 20% speed reduction) ─────────
+// Phase 1: 600ms  (was 500ms)  — logo fade-in / fade-out
+// Phase 2: 5400ms (was 4500ms) — carousel, 10 services × 540ms each
+//   Per card: 96ms rise + 348ms hold + 96ms fade (was 80/290/80)
+// Final overlay fade: 420ms    (was 350ms)
+// Total: 6000ms               (was 5000ms)
 
-const PHASE1_MS = 500;
-const PHASE2_MS = 4500;
+const PHASE1_MS = 600;
+const PHASE2_MS = 5400;
 const TOTAL_MS = PHASE1_MS + PHASE2_MS;
-const CARD_MS = PHASE2_MS / services.length; // 450ms per card
+const CARD_MS = PHASE2_MS / services.length; // 540ms per card
 
-const CARD_RISE_MS = 80;
-const CARD_HOLD_MS = CARD_MS - CARD_RISE_MS * 2;
-const CARD_FADE_MS = 80;
+const CARD_RISE_MS = 96;
+const CARD_FADE_MS = 96;
+const CARD_HOLD_MS = CARD_MS - CARD_RISE_MS - CARD_FADE_MS; // 348ms
 
-const FINAL_FADE_MS = 350;
+const FINAL_FADE_MS = 420;
 const FINAL_FADE_START = TOTAL_MS - FINAL_FADE_MS;
 
 function easeOutCubic(t: number) {
@@ -51,7 +53,6 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
       // ── Phase 1: logo ──────────────────────────────────────────────────────
       if (elapsed < PHASE1_MS) {
         const t = elapsed / PHASE1_MS;
-        // First half: fade in, second half: fade out
         const logoOpacity = t < 0.5
           ? easeOutCubic(t * 2)
           : 1 - easeInCubic((t - 0.5) * 2);
@@ -75,7 +76,7 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
         if (cardIndex !== lastCardIndex) {
           cardEls.forEach((el, i) => {
             el.style.opacity = '0';
-            el.style.transform = 'translateY(40px)';
+            el.style.transform = 'translateY(48px)';
             el.style.display = i === cardIndex ? 'flex' : 'none';
           });
           lastCardIndex = cardIndex;
@@ -89,14 +90,14 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
           if (cardElapsed < CARD_RISE_MS) {
             const t = easeOutCubic(cardElapsed / CARD_RISE_MS);
             opacity = t;
-            translateY = 40 * (1 - t);
+            translateY = 48 * (1 - t);
           } else if (cardElapsed < CARD_RISE_MS + CARD_HOLD_MS) {
             opacity = 1;
             translateY = 0;
           } else {
             const t = easeInCubic((cardElapsed - CARD_RISE_MS - CARD_HOLD_MS) / CARD_FADE_MS);
             opacity = 1 - t;
-            translateY = -24 * t;
+            translateY = -28 * t;
           }
 
           activeCard.style.opacity = String(Math.max(0, Math.min(1, opacity)));
@@ -164,6 +165,7 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
           justifyContent: 'center',
           opacity: 0,
           willChange: 'opacity',
+          padding: '0 24px',
         }}
       >
         {services.map((service) => (
@@ -175,25 +177,55 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
               alignItems: 'center',
               justifyContent: 'center',
               opacity: 0,
-              transform: 'translateY(40px)',
+              transform: 'translateY(48px)',
               willChange: 'opacity, transform',
-              textAlign: 'center',
-              padding: '0 24px',
             }}
           >
-            <span
+            {/* Card shell */}
+            <div
               style={{
-                fontFamily: 'inherit',
-                fontSize: 'clamp(1.25rem, 4vw, 2rem)',
-                fontWeight: 600,
-                letterSpacing: '0.04em',
-                color: 'rgba(255,255,255,0.92)',
-                textTransform: 'uppercase',
-                lineHeight: 1.2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 'clamp(14px, 3vw, 22px) clamp(28px, 6vw, 52px)',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '12px',
+                boxShadow: '0 4px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.06) inset',
+                backdropFilter: 'blur(6px)',
+                minWidth: 'clamp(220px, 50vw, 420px)',
+                maxWidth: 'min(560px, 88vw)',
               }}
             >
-              {service.shortTitle}
-            </span>
+              {/* Accent bar */}
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '40%',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent, rgba(212,163,79,0.8), transparent)',
+                  borderRadius: '0 0 2px 2px',
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: 'inherit',
+                  fontSize: 'clamp(1rem, 3.5vw, 1.6rem)',
+                  fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  color: '#F5F0E8',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.2,
+                  textAlign: 'center',
+                  textShadow: '0 1px 8px rgba(0,0,0,0.6)',
+                }}
+              >
+                {service.shortTitle}
+              </span>
+            </div>
           </div>
         ))}
       </div>
