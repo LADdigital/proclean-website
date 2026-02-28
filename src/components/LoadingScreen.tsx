@@ -1,14 +1,23 @@
 import { useEffect, useRef } from 'react';
-import { services } from '../data/services';
 
 interface LoadingScreenProps {
   onDone: () => void;
 }
 
+const loadingServices = [
+  { id: 'ceramic-coating', shortTitle: 'Ceramic Coating' },
+  { id: 'paint-correction', shortTitle: 'Paint Correction' },
+  { id: 'auto-detailing', shortTitle: 'Auto Detailing' },
+  { id: 'wheel-restoration', shortTitle: 'Wheel Restoration' },
+  { id: 'rock-chip-repair', shortTitle: 'Rock Chip Repair' },
+  { id: 'paintless-dent-repair', shortTitle: 'Paintless Dent Repair' },
+  { id: 'and-more', shortTitle: 'And More' },
+];
+
 const PHASE1_MS = 400;
-const PHASE2_MS = 4200;
+const PHASE2_MS = 3500;
 const TOTAL_MS = PHASE1_MS + PHASE2_MS;
-const CARD_MS = PHASE2_MS / services.length; // ~619ms per card (8 services)
+const CARD_MS = PHASE2_MS / loadingServices.length;
 
 const CARD_RISE_MS = 75;
 const CARD_FADE_MS = 75;
@@ -62,7 +71,7 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
         const phase2Elapsed = elapsed - PHASE1_MS;
         const cardIndex = Math.min(
           Math.floor(phase2Elapsed / CARD_MS),
-          services.length - 1
+          loadingServices.length - 1
         );
         const cardElapsed = phase2Elapsed - cardIndex * CARD_MS;
 
@@ -161,7 +170,7 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
           padding: '0 24px',
         }}
       >
-        {services.map((service) => (
+        {loadingServices.map((service) => (
           <div
             key={service.id}
             className="ls-card"
