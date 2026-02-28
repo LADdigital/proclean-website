@@ -18,6 +18,17 @@ export default {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
+      keyframes: {
+        'widget-bounce': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '30%': { transform: 'translateY(-10px)' },
+          '60%': { transform: 'translateY(-4px)' },
+          '80%': { transform: 'translateY(-7px)' },
+        },
+      },
+      animation: {
+        'widget-bounce': 'widget-bounce 1.2s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

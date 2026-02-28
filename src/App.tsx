@@ -45,12 +45,14 @@ function DetailModeManager() {
 }
 
 function PublicLayout({ showLoader }: { showLoader: boolean }) {
+  const [chatOpen, setChatOpen] = useState(false);
+
   return (
     <>
       <ScrollToTop />
       <SchemaMarkup />
       <DetailModeManager />
-      <Header />
+      <Header onOpenChat={() => setChatOpen(true)} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -63,7 +65,7 @@ function PublicLayout({ showLoader }: { showLoader: boolean }) {
       </main>
       <DeveloperSignature />
       <Footer />
-      {!showLoader && <ChatPlaceholder />}
+      {!showLoader && <ChatPlaceholder isOpen={chatOpen} setIsOpen={setChatOpen} />}
     </>
   );
 }

@@ -2,10 +2,15 @@ import { lazy, Suspense } from 'react';
 
 const Chatbot = lazy(() => import('./Chatbot'));
 
-export default function ChatPlaceholder() {
+interface ChatPlaceholderProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+export default function ChatPlaceholder({ isOpen, setIsOpen }: ChatPlaceholderProps) {
   return (
     <Suspense fallback={null}>
-      <Chatbot />
+      <Chatbot isOpen={isOpen} setIsOpen={setIsOpen} />
     </Suspense>
   );
 }

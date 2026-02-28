@@ -36,7 +36,8 @@ interface WebhookResponse {
   confidence?: string;
 }
 
-function CustomChatIcon() {
+function CustomChatIcon({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  const sizeClass = size === 'sm' ? 'w-5 h-5' : size === 'lg' ? 'w-9 h-9' : 'w-6 h-6';
   return (
     <svg
       viewBox="0 0 24 24"
@@ -45,7 +46,7 @@ function CustomChatIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-6 h-6"
+      className={sizeClass}
     >
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
@@ -183,8 +184,12 @@ function LoadingIndicator({ prefersReducedMotion }: { prefersReducedMotion: bool
   );
 }
 
-export default function Chatbot() {
-  const [isOpen, setIsOpen] = useState(false);
+interface ChatbotProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -284,28 +289,11 @@ export default function Chatbot() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className="fixed bottom-6 right-6 z-[9999] group"
+        className={`fixed bottom-6 right-6 z-[9999] group ${!isOpen && !prefersReducedMotion ? 'animate-widget-bounce' : ''}`}
         style={{ touchAction: 'manipulation' }}
       >
-        {!isOpen && (
-          <svg
-            viewBox="0 0 100 100"
-            className="absolute w-24 h-24 -top-5 pointer-events-none select-none"
-            style={{ right: 'auto', left: '-20px' }}
-            aria-hidden="true"
-          >
-            <defs>
-              <path id="curve" d="M 15,50 A 35,35 0 1,1 85,50" />
-            </defs>
-            <text style={{ fill: '#B91C1C', fontSize: '12.5px', fontWeight: 600, letterSpacing: '0.04em' }}>
-              <textPath href="#curve" startOffset="50%" textAnchor="middle">
-                Ask Me Anything
-              </textPath>
-            </text>
-          </svg>
-        )}
         <div
-          className={`relative w-14 h-14 flex items-center justify-center text-white cursor-pointer
+          className={`relative w-20 h-20 flex items-center justify-center text-white cursor-pointer
             ${animationClass}
             ${isOpen ? 'scale-95' : 'scale-100 hover:scale-110'}
           `}
@@ -327,7 +315,7 @@ export default function Chatbot() {
           />
 
           <div className={`relative z-10 ${animationClass}`}>
-            <CustomChatIcon />
+            <CustomChatIcon size="lg" />
           </div>
         </div>
       </button>
@@ -349,7 +337,7 @@ export default function Chatbot() {
             ? 'opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0'
             : 'opacity-0 pointer-events-none max-lg:translate-y-full lg:translate-x-full'
           }
-          lg:bottom-24 lg:right-6 lg:rounded-2xl lg:h-[600px]
+          lg:bottom-28 lg:right-6 lg:rounded-2xl lg:h-[600px]
           max-lg:bottom-0 max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:rounded-t-3xl max-lg:h-[82svh]
         `}
         style={{
