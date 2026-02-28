@@ -6,6 +6,7 @@ import {
   Phone,
   Clock,
   MapPin,
+  Gift,
 } from 'lucide-react';
 import { prefersReducedMotion } from '../utils/animations';
 import { Link } from 'react-router-dom';
@@ -180,6 +181,14 @@ export default function Home() {
                   Call {CONTACT.phone}
                 </a>
               </div>
+              <Link
+                to="/gift-card"
+                className="inline-flex items-center gap-2 text-brand-orange-light font-semibold hover:gap-3 transition-all text-sm"
+              >
+                <Gift className="w-4 h-4" />
+                Give a Gift Card
+                <ArrowRight className="w-4 h-4" />
+              </Link>
               <SocialLinks variant="light" />
             </div>
           </div>
@@ -278,6 +287,29 @@ export default function Home() {
           >
             See All Reviews on Google <ArrowRight className="w-5 h-5" />
           </a>
+        </div>
+      </section>
+
+      <section className="py-10 bg-brand-charcoal">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-6 sm:px-10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0">
+                <Gift className="w-6 h-6 text-brand-orange-light" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-lg leading-tight">Give the gift of a clean car</p>
+                <p className="text-stone-400 text-sm mt-0.5">Pro Clean gift cards — perfect for any occasion.</p>
+              </div>
+            </div>
+            <Link
+              to="/gift-card"
+              className="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-brand-red text-white font-semibold rounded-lg hover:bg-brand-red/90 btn-apple-hover text-sm whitespace-nowrap"
+            >
+              <Gift className="w-4 h-4" />
+              Get a Gift Card
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -455,6 +487,12 @@ export default function Home() {
                 >
                   <Phone className="w-5 h-5" /> Call Us
                 </a>
+                <Link
+                  to="/gift-card"
+                  className="inline-flex items-center gap-2 px-8 py-4 text-brand-orange-light font-semibold border-2 border-brand-orange-light/30 rounded-lg hover:border-brand-orange-light btn-apple-hover"
+                >
+                  <Gift className="w-5 h-5" /> Gift Cards
+                </Link>
               </div>
             </div>
 
