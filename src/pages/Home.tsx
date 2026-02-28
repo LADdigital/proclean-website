@@ -141,7 +141,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full flex flex-col lg:min-h-screen" style={contentTransform}>
-          <div className="lg:flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-48">
+          <div className="lg:flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-54">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
                 Come See the Future of the{' '}
