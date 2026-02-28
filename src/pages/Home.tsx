@@ -128,42 +128,28 @@ export default function Home() {
 
   return (
     <div ref={animRef}>
-      <section className="relative lg:min-h-[100vh] lg:flex lg:items-center overflow-hidden bg-brand-charcoal pt-24 pb-12 sm:pt-28 sm:pb-16 lg:py-24">
-        <div ref={heroRef} className="absolute inset-0 lg:flex lg:items-center lg:justify-center hidden" style={backgroundTransform}>
+      <section className="relative overflow-hidden bg-brand-charcoal" style={{ minHeight: '100vh' }}>
+        <div ref={heroRef} className="absolute inset-0 hidden lg:block" style={backgroundTransform}>
           <img
             src={siteContent.images.hero.src}
             alt={siteContent.images.hero.alt}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/85 via-brand-charcoal/60 to-brand-charcoal/45" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/90 via-transparent to-brand-charcoal/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/60 via-transparent to-brand-charcoal/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-charcoal/40 via-transparent to-brand-charcoal/20" />
         </div>
 
-        <div className="relative z-10 w-full" style={contentTransform}>
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center lg:pt-8 lg:pb-20 pt-0 pb-8">
-            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-6 sm:mb-8 tracking-tight -mt-10 sm:-mt-12 lg:-mt-16">
-              Come See the Future of the{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
-                Auto Detail Industry
-              </span>
-            </h1>
-
-            <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mb-16 sm:mb-20 lg:mb-24" />
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8">
-              <BookingButton size="lg">
-                Schedule Your Detail
-              </BookingButton>
-              <a
-                href={CONTACT.phoneLink}
-                className="inline-flex items-center gap-2 px-6 py-4 text-white font-semibold border-2 border-white/30 rounded-lg hover:bg-white/10 btn-apple-hover text-sm sm:text-base"
-              >
-                <Phone className="w-5 h-5" />
-                Call {CONTACT.phone}
-              </a>
+        <div className="relative z-10 w-full flex flex-col" style={{ minHeight: '100vh', ...contentTransform }}>
+          <div className="flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-36">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
+                Come See the Future of the{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
+                  Auto Detail Industry
+                </span>
+              </h1>
+              <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mx-auto mt-6" />
             </div>
-
-            <SocialLinks variant="light" />
           </div>
 
           <div className="lg:hidden">
@@ -172,6 +158,24 @@ export default function Home() {
               alt={siteContent.images.hero.alt}
               className="w-full h-auto object-contain"
             />
+          </div>
+
+          <div className="pb-12 sm:pb-16 lg:pb-20 pt-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                <BookingButton size="lg">
+                  Schedule Your Detail
+                </BookingButton>
+                <a
+                  href={CONTACT.phoneLink}
+                  className="inline-flex items-center gap-2 px-6 py-4 text-white font-semibold border-2 border-white/30 rounded-lg hover:bg-white/10 btn-apple-hover text-sm sm:text-base"
+                >
+                  <Phone className="w-5 h-5" />
+                  Call {CONTACT.phone}
+                </a>
+              </div>
+              <SocialLinks variant="light" />
+            </div>
           </div>
         </div>
 
