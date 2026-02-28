@@ -163,38 +163,4 @@ export const services: Service[] = [
     seoTitle: 'Paintless Dent Repair Yakima WA | Pro Clean Auto Detail Systems',
     seoDescription: 'Paintless dent repair in Yakima, WA. Remove dents, dings, and hail damage without repainting. Fast, affordable, professional.',
   },
-  {
-    id: 'rv-detailing',
-    title: 'RV Detailing',
-    shortTitle: 'RV Detailing',
-    description:
-      'Keep your RV road-ready and looking its best with professional RV detailing from Pro Clean Auto Detail Systems in Yakima, WA. Recreational vehicles face unique challenges — extended sun exposure, road grime buildup, black streaks, and oxidized fiberglass are just a few. Our experienced team has the equipment and knowledge to handle full-size motorhomes, travel trailers, and fifth wheels. We clean, polish, and protect every exterior surface while giving the interior the deep cleaning it needs after months on the road.',
-    features: [
-      'Full exterior wash and decontamination',
-      'Oxidation and black streak removal',
-      'Fiberglass polishing and wax',
-      'Roof cleaning and treatment',
-      'Complete interior deep clean',
-      'Awning and slide-out cleaning',
-    ],
-    seoTitle: 'RV Detailing Yakima WA | Pro Clean Auto Detail Systems',
-    seoDescription: 'Professional RV detailing in Yakima, WA. Full interior and exterior cleaning, oxidation removal, and protection. 15+ years experience.',
-  },
-  {
-    id: 'boat-detailing',
-    title: 'Boat Detailing',
-    shortTitle: 'Boat Detailing',
-    description:
-      'Protect your investment on the water with professional boat detailing from Pro Clean Auto Detail Systems in Yakima, WA. Whether you trailer your boat to local lakes or store it through the off-season, our team provides thorough cleaning, polishing, and protection for gel coat, fiberglass, vinyl, and metal surfaces. We remove water spots, oxidation, and algae stains while applying marine-grade protectants to keep your boat looking sharp all season long. Serving boat owners throughout the Yakima Valley and surrounding areas.',
-    features: [
-      'Gel coat and fiberglass polishing',
-      'Oxidation and water spot removal',
-      'Vinyl and upholstery cleaning',
-      'Metal brightening and protection',
-      'Marine-grade wax and sealant',
-      'Trailer cleaning included',
-    ],
-    seoTitle: 'Boat Detailing Yakima WA | Pro Clean Auto Detail Systems',
-    seoDescription: 'Professional boat detailing in Yakima, WA. Gel coat polishing, oxidation removal, and marine protection. Trusted local experts.',
-  },
 ];

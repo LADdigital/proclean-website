@@ -5,23 +5,24 @@ interface LoadingScreenProps {
   onDone: () => void;
 }
 
-// ─── Timing (all values are original × 1.2 for 20% speed reduction) ─────────
-// Phase 1: 600ms  (was 500ms)  — logo fade-in / fade-out
-// Phase 2: 5400ms (was 4500ms) — carousel, 10 services × 540ms each
-//   Per card: 96ms rise + 348ms hold + 96ms fade (was 80/290/80)
-// Final overlay fade: 420ms    (was 350ms)
-// Total: 6000ms               (was 5000ms)
+// ─── Timing history ───────────────────────────────────────────────────────────
+// Original:          500 / 4500ms total (80ms rise/fade, 350ms final)
+// After ×1.2 (+20%): 600 / 5400ms total (96ms rise/fade, 420ms final)
+// After ×1.15 (+15%): 690 / 6210ms total (111ms rise/fade, 483ms final)  ← current
+//
+// Services carousel: 8 cards × ~776ms each (was 10 cards; RV & Boat removed)
+// Per card: 111ms rise + 554ms hold + 111ms fade
 
-const PHASE1_MS = 600;
-const PHASE2_MS = 5400;
+const PHASE1_MS = 690;
+const PHASE2_MS = 6210;
 const TOTAL_MS = PHASE1_MS + PHASE2_MS;
-const CARD_MS = PHASE2_MS / services.length; // 540ms per card
+const CARD_MS = PHASE2_MS / services.length; // ~776ms per card (8 services)
 
-const CARD_RISE_MS = 96;
-const CARD_FADE_MS = 96;
-const CARD_HOLD_MS = CARD_MS - CARD_RISE_MS - CARD_FADE_MS; // 348ms
+const CARD_RISE_MS = 111;
+const CARD_FADE_MS = 111;
+const CARD_HOLD_MS = CARD_MS - CARD_RISE_MS - CARD_FADE_MS;
 
-const FINAL_FADE_MS = 420;
+const FINAL_FADE_MS = 483;
 const FINAL_FADE_START = TOTAL_MS - FINAL_FADE_MS;
 
 function easeOutCubic(t: number) {
