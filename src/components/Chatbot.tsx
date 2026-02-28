@@ -285,11 +285,13 @@ export default function Chatbot() {
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
         className="fixed bottom-6 right-6 z-[9999] group"
+        style={{ touchAction: 'manipulation' }}
       >
         {!isOpen && (
           <svg
             viewBox="0 0 100 100"
-            className="absolute w-24 h-24 -top-5 -left-5 pointer-events-none select-none"
+            className="absolute w-24 h-24 -top-5 pointer-events-none select-none"
+            style={{ right: 'auto', left: '-20px' }}
             aria-hidden="true"
           >
             <defs>
@@ -348,8 +350,12 @@ export default function Chatbot() {
             : 'opacity-0 pointer-events-none max-lg:translate-y-full lg:translate-x-full'
           }
           lg:bottom-24 lg:right-6 lg:rounded-2xl lg:h-[600px]
-          max-lg:bottom-0 max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:rounded-t-3xl max-lg:h-[85vh]
+          max-lg:bottom-0 max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:rounded-t-3xl max-lg:h-[82svh]
         `}
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          maxHeight: 'calc(100svh - 48px)',
+        }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="chatbot-title"
