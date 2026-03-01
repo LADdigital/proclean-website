@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
-import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home, DollarSign } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home } from 'lucide-react';
 import { PricingTier } from '../../hooks/useAdminServices';
 
 interface AdminService {
@@ -328,11 +328,6 @@ function ServiceRow({
             {service.show_on_home && (
               <span className="text-xs px-2 py-0.5 rounded-full font-medium shrink-0 bg-blue-900/50 text-blue-400 flex items-center gap-1">
                 <Home className="w-2.5 h-2.5" /> Home
-              </span>
-            )}
-            {hasTiers && (
-              <span className="text-xs px-2 py-0.5 rounded-full font-medium shrink-0 bg-amber-900/50 text-amber-400 flex items-center gap-1">
-                <DollarSign className="w-2.5 h-2.5" /> {service.pricing_tiers!.length} tier{service.pricing_tiers!.length !== 1 ? 's' : ''}
               </span>
             )}
           </div>

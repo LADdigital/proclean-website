@@ -101,7 +101,8 @@ function AppRoutes({ showLoader }: { showLoader: boolean }) {
 }
 
 export default function App() {
-  const [showLoader, setShowLoader] = useState(true);
+  const isAdmin = window.location.pathname.startsWith('/admin');
+  const [showLoader, setShowLoader] = useState(!isAdmin);
   const handleDone = useCallback(() => setShowLoader(false), []);
 
   return (
