@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
-import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home, ArrowUp, ArrowDown } from 'lucide-react';
 import { PricingTier } from '../../hooks/useAdminServices';
 
 interface AdminService {
@@ -181,6 +181,26 @@ export default function AdminServicesPanel() {
     setDeleteTarget(null);
   }
 
+  async function moveService(index: number, direction: 'up' | 'down') {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= services.length) return;
+
+    const updated = [...services];
+    const aOrder = updated[index].sort_order;
+    const bOrder = updated[targetIndex].sort_order;
+
+    updated[index] = { ...updated[index], sort_order: bOrder };
+    updated[targetIndex] = { ...updated[targetIndex], sort_order: aOrder };
+    [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+
+    setServices(updated);
+
+    await Promise.all([
+      supabase.from('admin_services').update({ sort_order: bOrder }).eq('id', services[index].id),
+      supabase.from('admin_services').update({ sort_order: aOrder }).eq('id', services[targetIndex].id),
+    ]);
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -242,7 +262,7 @@ export default function AdminServicesPanel() {
       )}
 
       <div className="space-y-2">
-        {services.map((service) => (
+        {services.map((service, index) => (
           <ServiceRow
             key={service.id}
             service={service}
@@ -261,6 +281,8 @@ export default function AdminServicesPanel() {
             onToggleShowOnHome={toggleShowOnHome}
             onDelete={() => setDeleteTarget(service)}
             onImageUpload={(e) => handleImageUpload(e, service.id)}
+            onMoveUp={index > 0 ? () => moveService(index, 'up') : undefined}
+            onMoveDown={index < services.length - 1 ? () => moveService(index, 'down') : undefined}
           />
         ))}
       </div>
@@ -294,12 +316,15 @@ interface ServiceRowProps {
   onToggleShowOnHome: (s: AdminService) => void;
   onDelete: () => void;
   onImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }
 
 function ServiceRow({
   service, editingId, expandedId, setExpandedId,
   form, setForm, saving, uploadingFor, editFileRef,
   onStartEdit, onCancelEdit, onSaveEdit, onToggleActive, onToggleShowOnHome, onDelete, onImageUpload,
+  onMoveUp, onMoveDown,
 }: ServiceRowProps) {
   const isEditing = editingId === service.id;
   const isExpanded = expandedId === service.id;
@@ -337,6 +362,24 @@ function ServiceRow({
         </div>
 
         <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col mr-1">
+            <button
+              onClick={onMoveUp}
+              disabled={!onMoveUp}
+              title="Move up"
+              className="p-1 rounded text-stone-600 hover:text-white hover:bg-stone-700 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+            >
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={onMoveDown}
+              disabled={!onMoveDown}
+              title="Move down"
+              className="p-1 rounded text-stone-600 hover:text-white hover:bg-stone-700 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+            >
+              <ArrowDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
           <button
             onClick={() => onToggleShowOnHome(service)}
             title={service.show_on_home ? 'Remove from home page' : 'Show on home page'}
