@@ -15,7 +15,7 @@ import SocialLinks from '../components/SocialLinks';
 import EnhancedCarousel from '../components/EnhancedCarousel';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { supabase } from '../lib/supabase';
-import { CONTACT } from '../data/services';
+import { CONTACT, getPricingForService } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { useHeroDepth } from '../hooks/useHeroDepth';
 import { useRevealAnimation } from '../hooks/useRevealAnimation';
@@ -359,7 +359,16 @@ export default function Home() {
                     <h3 className="text-lg font-semibold text-brand-charcoal group-hover:text-brand-red transition-colors">
                       {service.title}
                     </h3>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
+                    {(() => {
+                      const pricing = getPricingForService(service.service_key);
+                      if (!pricing) return null;
+                      return (
+                        <p className="mt-1.5 text-base font-bold text-brand-red">
+                          {pricing.tiers[0].price}
+                        </p>
+                      );
+                    })()}
+                    <div className="mt-3 flex items-center gap-1 text-sm font-medium text-brand-red opacity-0 group-hover:opacity-100 transition-opacity">
                       Learn More <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>

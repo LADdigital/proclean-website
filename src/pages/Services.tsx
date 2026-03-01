@@ -4,7 +4,7 @@ import { CheckCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
 import ServiceImageUpload from '../components/ServiceImageUpload';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { services as staticServices } from '../data/services';
+import { services as staticServices, getPricingForService } from '../data/services';
 import { siteContent } from '../content/siteContent';
 import { supabase } from '../lib/supabase';
 import { useAdminServices, AdminServiceRecord } from '../hooks/useAdminServices';
@@ -225,9 +225,28 @@ export default function Services() {
                         </div>
                       )}
 
-                      {service.price > 0 && (
-                        <p className="text-base font-semibold text-brand-red mb-6">Starting at ${service.price}</p>
-                      )}
+                      {(() => {
+                        const pricing = getPricingForService(service.service_key);
+                        if (!pricing) return null;
+                        return (
+                          <div className="mb-8">
+                            <h3 className="text-sm font-semibold text-brand-charcoal uppercase tracking-wider mb-3">
+                              Pricing
+                            </h3>
+                            <div className="rounded-xl border border-stone-200 overflow-hidden">
+                              {pricing.tiers.map((tier, ti) => (
+                                <div
+                                  key={tier.label}
+                                  className={`flex items-center justify-between px-4 py-3 ${ti % 2 === 0 ? 'bg-white' : 'bg-stone-50'}`}
+                                >
+                                  <span className="text-sm text-stone-600">{tier.label}</span>
+                                  <span className="text-base font-bold text-brand-red">{tier.price}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       <BookingButton size="md">
                         Book {service.short_title || service.title}

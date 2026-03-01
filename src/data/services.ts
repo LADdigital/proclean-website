@@ -1,3 +1,124 @@
+export interface PriceTier {
+  label: string;
+  price: string;
+}
+
+export interface ServicePricing {
+  serviceKey: string;
+  tiers: PriceTier[];
+  note?: string;
+}
+
+export const servicePricing: ServicePricing[] = [
+  {
+    serviceKey: 'complete-detail',
+    tiers: [
+      { label: 'Car / Small Truck', price: '$345' },
+      { label: 'Mid Size SUV / Truck', price: '$395' },
+      { label: 'Full Size SUV / Truck', price: '$445' },
+    ],
+  },
+  {
+    serviceKey: 'interior-detailing',
+    tiers: [
+      { label: 'Car / Small Truck', price: '$255' },
+      { label: 'Mid Size SUV / Truck', price: '$295' },
+      { label: 'Full Size SUV / Truck', price: '$325' },
+    ],
+  },
+  {
+    serviceKey: 'exterior-detailing',
+    tiers: [
+      { label: 'Car / Small Truck', price: '$255' },
+      { label: 'Mid Size SUV / Truck', price: '$295' },
+      { label: 'Full Size SUV / Truck', price: '$325' },
+    ],
+  },
+  {
+    serviceKey: 'mini-detail',
+    tiers: [
+      { label: 'Mini Detail', price: '$125' },
+    ],
+  },
+  {
+    serviceKey: 'ceramic-coating',
+    tiers: [
+      { label: 'Ceramic Coating', price: 'Starting at $600' },
+    ],
+  },
+  {
+    serviceKey: 'undercoat',
+    tiers: [
+      { label: 'Undercoat', price: 'Starting at $500' },
+    ],
+  },
+  {
+    serviceKey: 'spray-in-bed-liner',
+    tiers: [
+      { label: 'Spray In Bed Liner (Vortex)', price: 'Starting at $475' },
+    ],
+  },
+  {
+    serviceKey: 'paint-correction',
+    tiers: [
+      { label: 'Paint Correction', price: 'Starting at $95 per panel' },
+    ],
+  },
+  {
+    serviceKey: 'paintless-dent-repair',
+    tiers: [
+      { label: 'Paintless Dent Repair', price: 'Starting at $65' },
+    ],
+  },
+  {
+    serviceKey: 'wheel-restoration',
+    tiers: [
+      { label: 'Wheel Restoration', price: 'Starting at $125 per wheel' },
+    ],
+  },
+  {
+    serviceKey: 'paint-touchup',
+    tiers: [
+      { label: 'Paint Touch Up', price: '$50' },
+    ],
+  },
+  {
+    serviceKey: 'rock-chip-repair',
+    tiers: [
+      { label: 'Windshield Chip Repair', price: '$35' },
+    ],
+  },
+  {
+    serviceKey: 'bumper-repair',
+    tiers: [
+      { label: 'Bumper Repair', price: 'Starting at $250' },
+    ],
+  },
+  {
+    serviceKey: 'odor-removal',
+    tiers: [
+      { label: 'Odor Removal', price: '$50' },
+    ],
+  },
+  {
+    serviceKey: 'headlight-restoration',
+    tiers: [
+      { label: 'Headlight Restoration', price: '$49.99' },
+    ],
+  },
+  {
+    serviceKey: 'cigarette-burn-repair',
+    tiers: [
+      { label: 'Cigarette Burn Repair', price: '$35' },
+    ],
+  },
+];
+
+export function getPricingForService(serviceKey: string | null): ServicePricing | undefined {
+  if (!serviceKey) return undefined;
+  return servicePricing.find(p => p.serviceKey === serviceKey);
+}
+
 export interface Service {
   id: string;
   title: string;
