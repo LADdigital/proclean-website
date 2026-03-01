@@ -360,10 +360,12 @@ export default function Home() {
                       {service.title}
                     </h3>
                     {(() => {
-                      const pricing = getPricingForService(service.service_key);
-                      if (!pricing) return null;
-                      const hasVariations = pricing.tiers.length > 1;
-                      const displayPrice = pricing.tiers[0].price;
+                      const dbTiers = service.pricing_tiers;
+                      const staticPricing = getPricingForService(service.service_key);
+                      const tiers = dbTiers && dbTiers.length > 0 ? dbTiers : staticPricing?.tiers;
+                      if (!tiers || tiers.length === 0) return null;
+                      const hasVariations = tiers.length > 1;
+                      const displayPrice = tiers[0].price;
                       return (
                         <p className="mt-1.5 text-base font-bold text-brand-red">
                           {hasVariations ? `Starting at ${displayPrice}` : displayPrice}

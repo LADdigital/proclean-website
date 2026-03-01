@@ -128,8 +128,10 @@ export default function Services() {
         description: s.description,
         features: s.features,
         price: 0,
+        pricing_tiers: null,
         image_url: null,
         is_active: true,
+        show_on_home: false,
         sort_order: i + 1,
         created_at: '',
       }));
@@ -226,17 +228,19 @@ export default function Services() {
                       )}
 
                       {(() => {
-                        const pricing = getPricingForService(service.service_key);
-                        if (!pricing) return null;
+                        const dbTiers = service.pricing_tiers;
+                        const staticPricing = getPricingForService(service.service_key);
+                        const tiers = dbTiers && dbTiers.length > 0 ? dbTiers : staticPricing?.tiers;
+                        if (!tiers || tiers.length === 0) return null;
                         return (
                           <div className="mb-8">
                             <h3 className="text-sm font-semibold text-brand-charcoal uppercase tracking-wider mb-3">
                               Pricing
                             </h3>
                             <div className="rounded-xl border border-stone-200 overflow-hidden">
-                              {pricing.tiers.map((tier, ti) => (
+                              {tiers.map((tier, ti) => (
                                 <div
-                                  key={tier.label}
+                                  key={ti}
                                   className={`flex items-center justify-between px-4 py-3 ${ti % 2 === 0 ? 'bg-white' : 'bg-stone-50'}`}
                                 >
                                   <span className="text-sm text-stone-600">{tier.label}</span>

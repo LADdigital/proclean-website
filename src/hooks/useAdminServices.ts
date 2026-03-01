@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
+export interface PricingTier {
+  label: string;
+  price: string;
+}
+
 export interface AdminServiceRecord {
   id: string;
   service_key: string | null;
@@ -9,6 +14,7 @@ export interface AdminServiceRecord {
   description: string;
   features: string[];
   price: number;
+  pricing_tiers: PricingTier[] | null;
   image_url: string | null;
   is_active: boolean;
   show_on_home: boolean;

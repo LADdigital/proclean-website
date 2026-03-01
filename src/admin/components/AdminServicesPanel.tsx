@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
-import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home, DollarSign } from 'lucide-react';
+import { PricingTier } from '../../hooks/useAdminServices';
 
 interface AdminService {
   id: string;
@@ -11,6 +12,7 @@ interface AdminService {
   description: string;
   features: string[];
   price: number;
+  pricing_tiers: PricingTier[] | null;
   image_url: string | null;
   is_active: boolean;
   show_on_home: boolean;
@@ -23,7 +25,7 @@ interface ServiceFormData {
   short_title: string;
   description: string;
   features: string[];
-  price: string;
+  pricing_tiers: PricingTier[];
   image_url: string;
   is_active: boolean;
   show_on_home: boolean;
@@ -34,7 +36,7 @@ const emptyForm: ServiceFormData = {
   short_title: '',
   description: '',
   features: [''],
-  price: '',
+  pricing_tiers: [{ label: '', price: '' }],
   image_url: '',
   is_active: true,
   show_on_home: false,
@@ -46,7 +48,7 @@ function serviceToForm(s: AdminService): ServiceFormData {
     short_title: s.short_title ?? '',
     description: s.description,
     features: s.features?.length ? s.features : [''],
-    price: s.price > 0 ? String(s.price) : '',
+    pricing_tiers: s.pricing_tiers?.length ? s.pricing_tiers : [{ label: '', price: '' }],
     image_url: s.image_url ?? '',
     is_active: s.is_active,
     show_on_home: s.show_on_home ?? false,
@@ -118,6 +120,11 @@ export default function AdminServicesPanel() {
     setForm(emptyForm);
   }
 
+  function buildTiersPayload(tiers: PricingTier[]): PricingTier[] | null {
+    const clean = tiers.filter(t => t.label.trim() !== '' || t.price.trim() !== '');
+    return clean.length > 0 ? clean : null;
+  }
+
   async function saveEdit(id: string) {
     setSaving(true);
     const cleanFeatures = form.features.filter(f => f.trim() !== '');
@@ -126,7 +133,7 @@ export default function AdminServicesPanel() {
       short_title: form.short_title || form.title,
       description: form.description,
       features: cleanFeatures,
-      price: parseFloat(form.price) || 0,
+      pricing_tiers: buildTiersPayload(form.pricing_tiers),
       image_url: form.image_url || null,
       is_active: form.is_active,
       show_on_home: form.show_on_home,
@@ -145,7 +152,7 @@ export default function AdminServicesPanel() {
       short_title: form.short_title || form.title,
       description: form.description,
       features: cleanFeatures,
-      price: parseFloat(form.price) || 0,
+      pricing_tiers: buildTiersPayload(form.pricing_tiers),
       image_url: form.image_url || null,
       is_active: form.is_active,
       show_on_home: form.show_on_home,
@@ -296,6 +303,7 @@ function ServiceRow({
 }: ServiceRowProps) {
   const isEditing = editingId === service.id;
   const isExpanded = expandedId === service.id;
+  const hasTiers = service.pricing_tiers && service.pricing_tiers.length > 0;
 
   return (
     <div className={`rounded-2xl border bg-[#242424] transition-all ${service.is_active ? 'border-stone-700' : 'border-stone-800'} ${!service.is_active ? 'opacity-50' : ''}`}>
@@ -322,8 +330,10 @@ function ServiceRow({
                 <Home className="w-2.5 h-2.5" /> Home
               </span>
             )}
-            {service.price > 0 && (
-              <span className="text-xs text-stone-400 shrink-0">${service.price}</span>
+            {hasTiers && (
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium shrink-0 bg-amber-900/50 text-amber-400 flex items-center gap-1">
+                <DollarSign className="w-2.5 h-2.5" /> {service.pricing_tiers!.length} tier{service.pricing_tiers!.length !== 1 ? 's' : ''}
+              </span>
             )}
           </div>
           {!isExpanded && (
@@ -404,7 +414,7 @@ function ServiceRow({
           </div>
           {service.features?.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Features</p>
+              <p className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">What's Included</p>
               <ul className="space-y-1">
                 {service.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-stone-300">
@@ -413,6 +423,19 @@ function ServiceRow({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+          {hasTiers && (
+            <div>
+              <p className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Pricing</p>
+              <div className="rounded-xl border border-stone-700 overflow-hidden">
+                {service.pricing_tiers!.map((tier, ti) => (
+                  <div key={ti} className={`flex items-center justify-between px-4 py-2.5 ${ti % 2 === 0 ? 'bg-[#1a1a1a]' : 'bg-[#242424]'}`}>
+                    <span className="text-sm text-stone-300">{tier.label}</span>
+                    <span className="text-sm font-bold text-[#B91C1C]">{tier.price}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -447,6 +470,22 @@ function ServiceForm({ form, setForm, onImageUpload, fileInputRef, uploadingFor,
 
   function removeFeature(index: number) {
     setForm(p => ({ ...p, features: p.features.filter((_, i) => i !== index) }));
+  }
+
+  function updateTier(index: number, field: keyof PricingTier, value: string) {
+    setForm(p => {
+      const tiers = [...p.pricing_tiers];
+      tiers[index] = { ...tiers[index], [field]: value };
+      return { ...p, pricing_tiers: tiers };
+    });
+  }
+
+  function addTier() {
+    setForm(p => ({ ...p, pricing_tiers: [...p.pricing_tiers, { label: '', price: '' }] }));
+  }
+
+  function removeTier(index: number) {
+    setForm(p => ({ ...p, pricing_tiers: p.pricing_tiers.filter((_, i) => i !== index) }));
   }
 
   return (
@@ -520,15 +559,47 @@ function ServiceForm({ form, setForm, onImageUpload, fileInputRef, uploadingFor,
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-stone-400 mb-1.5">Starting Price ($) — leave blank if varies</label>
-        <input
-          type="number"
-          value={form.price}
-          onChange={(e) => setForm(p => ({ ...p, price: e.target.value }))}
-          className="w-full px-3 py-2.5 rounded-xl bg-[#1a1a1a] border border-stone-700 text-white text-sm focus:outline-none focus:border-[#B91C1C] transition-colors"
-          placeholder="0"
-          min="0"
-        />
+        <div className="flex items-center justify-between mb-1.5">
+          <div>
+            <label className="block text-xs font-medium text-stone-400">Pricing Tiers</label>
+            <p className="text-xs text-stone-600 mt-0.5">Add one row per vehicle size or variation. Leave blank to hide pricing.</p>
+          </div>
+          <button
+            type="button"
+            onClick={addTier}
+            className="flex items-center gap-1 text-xs text-[#B91C1C] hover:text-red-400 transition-colors"
+          >
+            <Plus className="w-3 h-3" /> Add Tier
+          </button>
+        </div>
+        <div className="space-y-2">
+          {form.pricing_tiers.map((tier, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={tier.label}
+                onChange={(e) => updateTier(i, 'label', e.target.value)}
+                className="flex-1 px-3 py-2 rounded-xl bg-[#1a1a1a] border border-stone-700 text-white text-sm focus:outline-none focus:border-[#B91C1C] transition-colors"
+                placeholder="e.g. Car / Small Truck"
+              />
+              <input
+                type="text"
+                value={tier.price}
+                onChange={(e) => updateTier(i, 'price', e.target.value)}
+                className="w-32 px-3 py-2 rounded-xl bg-[#1a1a1a] border border-stone-700 text-white text-sm focus:outline-none focus:border-[#B91C1C] transition-colors"
+                placeholder="e.g. $255"
+              />
+              <button
+                type="button"
+                onClick={() => removeTier(i)}
+                className="p-2 text-stone-600 hover:text-red-400 transition-colors shrink-0"
+                disabled={form.pricing_tiers.length === 1}
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div>
