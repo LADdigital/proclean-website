@@ -195,6 +195,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [sessionId, setSessionId] = useState(() => generateUUID());
+  const [isShaking, setIsShaking] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -209,6 +210,15 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
+
+  useEffect(() => {
+    if (isOpen || prefersReducedMotion) return;
+    const interval = setInterval(() => {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 700);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [isOpen, prefersReducedMotion]);
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
@@ -289,7 +299,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className={`fixed bottom-6 right-6 z-[9999] group ${!isOpen && !prefersReducedMotion ? 'animate-widget-bounce' : ''}`}
+        className={`fixed bottom-6 right-6 z-[9999] group ${isShaking ? 'animate-widget-shake' : ''}`}
         style={{ touchAction: 'manipulation' }}
       >
         <div

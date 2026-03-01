@@ -19,15 +19,21 @@ export default {
         display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       keyframes: {
-        'widget-bounce': {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '30%': { transform: 'translateY(-10px)' },
-          '60%': { transform: 'translateY(-4px)' },
-          '80%': { transform: 'translateY(-7px)' },
+        'widget-shake': {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '10%': { transform: 'rotate(-12deg)' },
+          '20%': { transform: 'rotate(12deg)' },
+          '30%': { transform: 'rotate(-10deg)' },
+          '40%': { transform: 'rotate(10deg)' },
+          '50%': { transform: 'rotate(-6deg)' },
+          '60%': { transform: 'rotate(6deg)' },
+          '70%': { transform: 'rotate(-2deg)' },
+          '80%': { transform: 'rotate(2deg)' },
+          '90%': { transform: 'rotate(0deg)' },
         },
       },
       animation: {
-        'widget-bounce': 'widget-bounce 1.2s ease-in-out infinite',
+        'widget-shake': 'widget-shake 0.7s ease-in-out',
       },
     },
   },
