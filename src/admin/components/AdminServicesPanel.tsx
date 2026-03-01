@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import ConfirmModal from './ConfirmModal';
-import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Image, Eye, EyeOff, Trash2, Pencil, Home, GripVertical } from 'lucide-react';
 import { PricingTier } from '../../hooks/useAdminServices';
 
 interface AdminService {
@@ -65,6 +65,8 @@ export default function AdminServicesPanel() {
   const [deleteTarget, setDeleteTarget] = useState<AdminService | null>(null);
   const [uploadingFor, setUploadingFor] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const dragIdRef = useRef<string | null>(null);
   const editFileRef = useRef<HTMLInputElement>(null);
   const addFileRef = useRef<HTMLInputElement>(null);
 
@@ -181,24 +183,44 @@ export default function AdminServicesPanel() {
     setDeleteTarget(null);
   }
 
-  async function moveService(index: number, direction: 'up' | 'down') {
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= services.length) return;
+  function handleDragStart(id: string) {
+    dragIdRef.current = id;
+  }
 
-    const updated = [...services];
-    const aOrder = updated[index].sort_order;
-    const bOrder = updated[targetIndex].sort_order;
+  function handleDragOver(e: React.DragEvent, id: string) {
+    e.preventDefault();
+    if (dragIdRef.current !== id) setDragOverId(id);
+  }
 
-    updated[index] = { ...updated[index], sort_order: bOrder };
-    updated[targetIndex] = { ...updated[targetIndex], sort_order: aOrder };
-    [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+  function handleDragLeave() {
+    setDragOverId(null);
+  }
 
-    setServices(updated);
+  async function handleDrop(targetId: string) {
+    setDragOverId(null);
+    const fromId = dragIdRef.current;
+    dragIdRef.current = null;
+    if (!fromId || fromId === targetId) return;
 
-    await Promise.all([
-      supabase.from('admin_services').update({ sort_order: bOrder }).eq('id', services[index].id),
-      supabase.from('admin_services').update({ sort_order: aOrder }).eq('id', services[targetIndex].id),
-    ]);
+    const fromIndex = services.findIndex(s => s.id === fromId);
+    const toIndex = services.findIndex(s => s.id === targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const reordered = [...services];
+    const [moved] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, moved);
+
+    const withNewOrder = reordered.map((s, i) => ({ ...s, sort_order: i + 1 }));
+    setServices(withNewOrder);
+
+    await Promise.all(
+      withNewOrder.map(s => supabase.from('admin_services').update({ sort_order: s.sort_order }).eq('id', s.id))
+    );
+  }
+
+  function handleDragEnd() {
+    dragIdRef.current = null;
+    setDragOverId(null);
   }
 
   if (loading) {
@@ -262,7 +284,7 @@ export default function AdminServicesPanel() {
       )}
 
       <div className="space-y-2">
-        {services.map((service, index) => (
+        {services.map((service) => (
           <ServiceRow
             key={service.id}
             service={service}
@@ -281,8 +303,12 @@ export default function AdminServicesPanel() {
             onToggleShowOnHome={toggleShowOnHome}
             onDelete={() => setDeleteTarget(service)}
             onImageUpload={(e) => handleImageUpload(e, service.id)}
-            onMoveUp={index > 0 ? () => moveService(index, 'up') : undefined}
-            onMoveDown={index < services.length - 1 ? () => moveService(index, 'down') : undefined}
+            isDragOver={dragOverId === service.id}
+            onDragStart={() => handleDragStart(service.id)}
+            onDragOver={(e) => handleDragOver(e, service.id)}
+            onDragLeave={handleDragLeave}
+            onDrop={() => handleDrop(service.id)}
+            onDragEnd={handleDragEnd}
           />
         ))}
       </div>
@@ -316,26 +342,46 @@ interface ServiceRowProps {
   onToggleShowOnHome: (s: AdminService) => void;
   onDelete: () => void;
   onImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
+  isDragOver: boolean;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: () => void;
+  onDrop: () => void;
+  onDragEnd: () => void;
 }
 
 function ServiceRow({
   service, editingId, expandedId, setExpandedId,
   form, setForm, saving, uploadingFor, editFileRef,
   onStartEdit, onCancelEdit, onSaveEdit, onToggleActive, onToggleShowOnHome, onDelete, onImageUpload,
-  onMoveUp, onMoveDown,
+  isDragOver, onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
 }: ServiceRowProps) {
   const isEditing = editingId === service.id;
   const isExpanded = expandedId === service.id;
   const hasTiers = service.pricing_tiers && service.pricing_tiers.length > 0;
 
   return (
-    <div className={`rounded-2xl border bg-[#242424] transition-all ${service.is_active ? 'border-stone-700' : 'border-stone-800'} ${!service.is_active ? 'opacity-50' : ''}`}>
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      className={`rounded-2xl border bg-[#242424] transition-all ${service.is_active ? 'border-stone-700' : 'border-stone-800'} ${!service.is_active ? 'opacity-50' : ''} ${isDragOver ? 'border-[#B91C1C] ring-1 ring-[#B91C1C]/40' : ''}`}
+    >
       <div
         className="flex items-center gap-3 px-5 py-4 cursor-pointer select-none"
         onClick={() => !isEditing && setExpandedId(isExpanded ? null : service.id)}
       >
+        <div
+          className="shrink-0 cursor-grab active:cursor-grabbing text-stone-600 hover:text-stone-400 transition-colors"
+          onMouseDown={e => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
+        >
+          <GripVertical className="w-4 h-4" />
+        </div>
+
         {service.image_url ? (
           <img src={service.image_url} alt={service.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
         ) : (
@@ -362,24 +408,6 @@ function ServiceRow({
         </div>
 
         <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-          <div className="flex flex-col mr-1">
-            <button
-              onClick={onMoveUp}
-              disabled={!onMoveUp}
-              title="Move up"
-              className="p-1 rounded text-stone-600 hover:text-white hover:bg-stone-700 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
-            >
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={onMoveDown}
-              disabled={!onMoveDown}
-              title="Move down"
-              className="p-1 rounded text-stone-600 hover:text-white hover:bg-stone-700 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
-            >
-              <ArrowDown className="w-3.5 h-3.5" />
-            </button>
-          </div>
           <button
             onClick={() => onToggleShowOnHome(service)}
             title={service.show_on_home ? 'Remove from home page' : 'Show on home page'}
