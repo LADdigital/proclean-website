@@ -10,12 +10,18 @@ interface GalleryImage {
   position: number;
 }
 
+function preloadImage(src: string) {
+  const img = new Image();
+  img.src = src;
+}
+
 export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const animRef = useScrollAnimation();
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -42,7 +48,11 @@ export default function Gallery() {
     setCurrentIndex(index);
     setLightboxOpen(true);
     document.body.style.overflow = 'hidden';
-  }, []);
+    const prevIdx = index === 0 ? images.length - 1 : index - 1;
+    const nextIdx = index === images.length - 1 ? 0 : index + 1;
+    if (images[prevIdx]) preloadImage(images[prevIdx].image_url);
+    if (images[nextIdx]) preloadImage(images[nextIdx].image_url);
+  }, [images]);
 
   const closeLightbox = useCallback(() => {
     setLightboxOpen(false);
@@ -50,12 +60,22 @@ export default function Gallery() {
   }, []);
 
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => {
+      const next = prev === 0 ? images.length - 1 : prev - 1;
+      const preloadIdx = next === 0 ? images.length - 1 : next - 1;
+      if (images[preloadIdx]) preloadImage(images[preloadIdx].image_url);
+      return next;
+    });
+  }, [images]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => {
+      const next = prev === images.length - 1 ? 0 : prev + 1;
+      const preloadIdx = next === images.length - 1 ? 0 : next + 1;
+      if (images[preloadIdx]) preloadImage(images[preloadIdx].image_url);
+      return next;
+    });
+  }, [images]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -140,13 +160,16 @@ export default function Gallery() {
                 <button
                   key={image.id}
                   onClick={() => openLightbox(index)}
-                  className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 image-hover-apple shadow-lg"
+                  onMouseEnter={() => preloadImage(image.image_url)}
+                  className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 image-hover-apple shadow-lg bg-stone-200"
                 >
                   <img
                     src={image.image_url}
                     alt="Gallery image"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${loadedImages.has(image.image_url) ? 'opacity-100' : 'opacity-0'}`}
+                    loading={index < 6 ? 'eager' : 'lazy'}
+                    fetchPriority={index < 3 ? 'high' : 'auto'}
+                    onLoad={() => setLoadedImages(prev => new Set(prev).add(image.image_url))}
                   />
                 </button>
               ))}

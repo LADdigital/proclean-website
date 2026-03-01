@@ -13,6 +13,7 @@ export default function MovingGallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [paused, setPaused] = useState(false);
+  const [loadedUrls, setLoadedUrls] = useState<Set<string>>(new Set());
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,12 +76,14 @@ export default function MovingGallery() {
           {[...images, ...images].map((image, idx) => (
             <div
               key={`${image.id}-${idx}`}
-              className="shrink-0 w-80 h-60 rounded-xl overflow-hidden shadow-lg border border-stone-200 group bg-brand-charcoal flex items-center justify-center"
+              className="shrink-0 w-80 h-60 rounded-xl overflow-hidden shadow-lg border border-stone-200 group bg-stone-200 relative"
             >
               <img
                 src={image.image_url}
                 alt={image.alt_text || image.title}
-                className="w-full h-full object-contain"
+                className={`w-full h-full object-cover transition-opacity duration-300 ${loadedUrls.has(image.image_url) ? 'opacity-100' : 'opacity-0'}`}
+                loading={idx < images.length ? 'eager' : 'lazy'}
+                onLoad={() => setLoadedUrls(prev => new Set(prev).add(image.image_url))}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                 <div className="text-white">
