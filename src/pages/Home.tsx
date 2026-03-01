@@ -362,9 +362,11 @@ export default function Home() {
                     {(() => {
                       const pricing = getPricingForService(service.service_key);
                       if (!pricing) return null;
+                      const hasVariations = pricing.tiers.length > 1;
+                      const displayPrice = pricing.tiers[0].price;
                       return (
                         <p className="mt-1.5 text-base font-bold text-brand-red">
-                          {pricing.tiers[0].price}
+                          {hasVariations ? `Starting at ${displayPrice}` : displayPrice}
                         </p>
                       );
                     })()}
