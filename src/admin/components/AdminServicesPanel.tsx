@@ -437,7 +437,10 @@ function ServiceRow({
             <Trash2 className="w-4 h-4" />
           </button>
           {!isEditing && (
-            <button className="p-2 rounded-lg text-stone-600 transition-colors">
+            <button
+              onClick={() => setExpandedId(isExpanded ? null : service.id)}
+              className="p-2 rounded-lg text-stone-500 hover:text-white hover:bg-stone-700 transition-colors"
+            >
               {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
           )}
