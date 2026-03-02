@@ -19,14 +19,6 @@ export const siteContent = {
         src: '/ceramiccoating.jpeg',
         alt: 'Professional ceramic coating application',
       },
-      'rv-detailing': {
-        src: 'https://images.pexels.com/photos/3588603/pexels-photo-3588603.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        alt: 'RV detailing service',
-      },
-      'boat-detailing': {
-        src: 'https://images.pexels.com/photos/3714896/pexels-photo-3714896.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        alt: 'Boat detailing service',
-      },
       'paint-touchup': {
         src: 'https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1200',
         alt: 'Paint touchup service',

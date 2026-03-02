@@ -202,7 +202,7 @@ export default function Services() {
               >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-2' : ''} gap-12 lg:gap-16 items-start`}>
-                    <div className={`fade-in ${reverseLayout ? 'lg:order-2' : ''} ${!hasImage ? 'max-w-4xl' : ''}`}>
+                    <div className={`fade-in order-2 lg:order-none ${reverseLayout ? 'lg:order-2' : ''} ${!hasImage ? 'max-w-4xl' : ''}`}>
                       <div className="w-16 h-16 rounded-xl bg-red-50 text-brand-red flex items-center justify-center mb-6">
                         {getIcon(service.service_key)}
                       </div>
@@ -260,7 +260,7 @@ export default function Services() {
                     </div>
 
                     {hasImage && (
-                      <div className={`fade-in ${reverseLayout ? 'lg:order-1' : ''}`} style={{ transitionDelay: '127ms' }}>
+                      <div className={`fade-in order-1 lg:order-none ${reverseLayout ? 'lg:order-1' : ''}`} style={{ transitionDelay: '127ms' }}>
                         {isEditorMode ? (
                           <ServiceImageUpload
                             serviceId={anchorId}
