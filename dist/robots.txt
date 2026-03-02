@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://www.procleanautoyakima.com/sitemap.xml
+Sitemap: https://www.procleanautodetailsystems.com/sitemap.xml
