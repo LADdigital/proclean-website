@@ -349,7 +349,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
                 style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
               >
                 <textPath href="#topArc" startOffset="50%" textAnchor="middle">
-                  Chat with Us
+                  Chat with Us!
                 </textPath>
               </text>
             </svg>
