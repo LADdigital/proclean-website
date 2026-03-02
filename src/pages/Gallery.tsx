@@ -8,6 +8,7 @@ interface GalleryImage {
   id: string;
   image_url: string;
   position: number;
+  caption: string | null;
 }
 
 function preloadImage(src: string) {
@@ -33,7 +34,7 @@ export default function Gallery() {
   async function fetchImages() {
     const { data, error } = await supabase
       .from('gallery_images')
-      .select('id, image_url, position')
+      .select('id, image_url, position, caption')
       .order('position', { ascending: true });
 
     if (error) {
@@ -155,23 +156,29 @@ export default function Gallery() {
               <p className="text-stone-500 text-lg">Add images in editor mode.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {images.map((image, index) => (
-                <button
-                  key={image.id}
-                  onClick={() => openLightbox(index)}
-                  onMouseEnter={() => preloadImage(image.image_url)}
-                  className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 image-hover-apple shadow-lg bg-stone-200"
-                >
-                  <img
-                    src={image.image_url}
-                    alt="Gallery image"
-                    className={`w-full h-full object-cover transition-opacity duration-300 ${loadedImages.has(image.image_url) ? 'opacity-100' : 'opacity-0'}`}
-                    loading={index < 6 ? 'eager' : 'lazy'}
-                    fetchPriority={index < 3 ? 'high' : 'auto'}
-                    onLoad={() => setLoadedImages(prev => new Set(prev).add(image.image_url))}
-                  />
-                </button>
+                <figure key={image.id} className="flex flex-col">
+                  <button
+                    onClick={() => openLightbox(index)}
+                    onMouseEnter={() => preloadImage(image.image_url)}
+                    className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 image-hover-apple shadow-lg bg-stone-200 w-full"
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={image.caption ?? 'Gallery image'}
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${loadedImages.has(image.image_url) ? 'opacity-100' : 'opacity-0'}`}
+                      loading={index < 6 ? 'eager' : 'lazy'}
+                      fetchPriority={index < 3 ? 'high' : 'auto'}
+                      onLoad={() => setLoadedImages(prev => new Set(prev).add(image.image_url))}
+                    />
+                  </button>
+                  {image.caption && (
+                    <figcaption className="mt-2 px-1 text-xs sm:text-sm text-stone-500 leading-relaxed text-center">
+                      {image.caption}
+                    </figcaption>
+                  )}
+                </figure>
               ))}
             </div>
           )}
@@ -232,17 +239,22 @@ export default function Gallery() {
           </button>
 
           <div
-            className="max-w-5xl max-h-[85vh] px-4 modal-enter"
+            className="flex flex-col items-center max-w-5xl px-4 modal-enter"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={images[currentIndex].image_url}
-              alt="Gallery image"
-              className="max-w-full max-h-[85vh] object-contain rounded-lg"
+              alt={images[currentIndex].caption ?? 'Gallery image'}
+              className="max-w-full max-h-[78vh] object-contain rounded-lg"
             />
+            {images[currentIndex].caption && (
+              <p className="mt-3 text-white/70 text-sm text-center max-w-xl leading-relaxed px-2">
+                {images[currentIndex].caption}
+              </p>
+            )}
           </div>
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/40 text-xs tracking-wider">
             {currentIndex + 1} / {images.length}
           </div>
         </div>
