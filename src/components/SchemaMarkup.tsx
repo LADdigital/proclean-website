@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-const BASE_URL = 'https://www.procleanautoyakima.com';
+const BASE_URL = 'https://www.procleanautodetailsystems.com';
 
 const BUSINESS_SCHEMA = {
   '@context': 'https://schema.org',

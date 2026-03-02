@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const BASE_URL = 'https://www.procleanautoyakima.com';
+const BASE_URL = 'https://www.procleanautodetailsystems.com';
 
 interface SEOMeta {
   title: string;
