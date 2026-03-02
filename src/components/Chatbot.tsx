@@ -337,7 +337,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
               <defs>
                 <path
                   id="topArc"
-                  d="M 22,44 A 40,40 0 0,1 102,44"
+                  d="M 22,49 A 40,40 0 0,1 102,49"
                   fill="none"
                 />
               </defs>
