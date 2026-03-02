@@ -335,16 +335,16 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
               aria-hidden="true"
             >
               <defs>
-                {/* Top arc: "Have Questions?" curves above the circle */}
+                {/* Top arc: left→right along top semicircle, text curves upward */}
                 <path
                   id="topArc"
                   d="M 14,56 A 42,42 0 0,1 98,56"
                   fill="none"
                 />
-                {/* Bottom arc: "Chat with Us" curves below the circle */}
+                {/* Bottom arc: left→right along bottom semicircle so text reads correctly curving downward */}
                 <path
                   id="bottomArc"
-                  d="M 18,62 A 42,42 0 0,0 94,62"
+                  d="M 14,58 A 42,42 0 0,0 98,58"
                   fill="none"
                 />
               </defs>
@@ -360,8 +360,8 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
                 </textPath>
               </text>
               <text
-                fontSize="10"
-                fontWeight="600"
+                fontSize="10.5"
+                fontWeight="700"
                 fontFamily="inherit"
                 fill="#f97316"
                 style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
