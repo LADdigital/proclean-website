@@ -339,7 +339,7 @@ export default function Home() {
               {homeServices.map((service, i) => (
                 <Link
                   key={service.id}
-                  to="/services"
+                  to={`/services#${service.service_key ?? service.id}`}
                   className={`group relative rounded-xl border border-stone-200 hover:border-brand-red/30 bg-white btn-apple-hover hover:shadow-xl hover:shadow-red-900/5 overflow-hidden flex flex-col h-full ${servicesReveal.isVisible ? 'reveal-visible' : 'reveal-hidden'} stagger-item-${i % 6}`}
                 >
                   <div className="relative overflow-hidden bg-stone-100 aspect-[4/3]">

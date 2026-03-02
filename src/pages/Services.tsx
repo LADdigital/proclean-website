@@ -106,17 +106,19 @@ export default function Services() {
   };
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.slice(1);
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 100;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  }, [location.hash]);
+    if (!location.hash || loading) return;
+    const id = location.hash.slice(1);
+    const attempt = (tries: number) => {
+      const el = document.getElementById(id);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top, behavior: 'smooth' });
+      } else if (tries > 0) {
+        setTimeout(() => attempt(tries - 1), 150);
+      }
+    };
+    setTimeout(() => attempt(5), 100);
+  }, [location.hash, loading]);
 
   const displayServices: AdminServiceRecord[] = dbServices.length > 0
     ? dbServices
