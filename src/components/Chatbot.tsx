@@ -196,11 +196,25 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [sessionId, setSessionId] = useState(() => generateUUID());
   const [isShaking, setIsShaking] = useState(false);
+  const [isMobileHidden, setIsMobileHidden] = useState(() => {
+    return sessionStorage.getItem('chatWidgetHidden') === 'true';
+  });
 
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const hideMobileWidget = () => {
+    setIsMobileHidden(true);
+    sessionStorage.setItem('chatWidgetHidden', 'true');
+    if (isOpen) setIsOpen(false);
+  };
+
+  const showMobileWidget = () => {
+    setIsMobileHidden(false);
+    sessionStorage.setItem('chatWidgetHidden', 'false');
+  };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -294,50 +308,106 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
 
   return (
     <>
+      {/* Mobile restore tab — shown only when widget is hidden on mobile */}
+      <button
+        onClick={showMobileWidget}
+        aria-label="Show chat widget"
+        className={`fixed bottom-20 right-0 z-[9999] sm:hidden flex items-center gap-1.5 pl-3 pr-2 py-2 bg-gradient-to-r from-brand-red to-brand-orange text-white text-xs font-semibold rounded-l-xl shadow-lg transition-all duration-300 ${isMobileHidden ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}`}
+      >
+        <CustomChatIcon size="sm" />
+        Chat
+      </button>
+
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className={`fixed bottom-6 right-6 z-[9999] group flex flex-col items-center gap-1 ${isShaking ? 'animate-widget-shake' : ''}`}
+        className={`fixed bottom-6 right-6 z-[9999] group ${isShaking ? 'animate-widget-shake' : ''} transition-all duration-300 ${isMobileHidden ? 'sm:flex hidden' : 'flex'}`}
         style={{ touchAction: 'manipulation' }}
       >
-        {!isOpen && (
-          <span className="text-xs font-semibold text-brand-orange drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] select-none">
-            Have Questions?
-          </span>
-        )}
-        <div
-          className={`relative w-20 h-20 flex items-center justify-center text-white cursor-pointer
-            ${animationClass}
-            ${isOpen ? 'scale-95' : 'scale-100 hover:scale-110'}
-          `}
-        >
-          <div
-            className={`absolute inset-0 rounded-full bg-gradient-to-br from-brand-red to-brand-orange opacity-0 blur-xl
-              ${animationClass}
-              ${isOpen ? 'opacity-70' : 'group-hover:opacity-50'}
-            `}
-          />
+        {/* Curved text SVG wrapper — sized to encompass the 80px button with arc labels */}
+        <div className="relative w-[112px] h-[112px] flex items-center justify-center">
+          {!isOpen && (
+            <svg
+              viewBox="0 0 112 112"
+              className="absolute inset-0 w-full h-full pointer-events-none select-none overflow-visible"
+              aria-hidden="true"
+            >
+              <defs>
+                {/* Top arc: "Have Questions?" curves above the circle */}
+                <path
+                  id="topArc"
+                  d="M 14,56 A 42,42 0 0,1 98,56"
+                  fill="none"
+                />
+                {/* Bottom arc: "Chat with Us" curves below the circle */}
+                <path
+                  id="bottomArc"
+                  d="M 18,62 A 42,42 0 0,0 94,62"
+                  fill="none"
+                />
+              </defs>
+              <text
+                fontSize="10"
+                fontWeight="600"
+                fontFamily="inherit"
+                fill="#f97316"
+                style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
+              >
+                <textPath href="#topArc" startOffset="50%" textAnchor="middle">
+                  Have Questions?
+                </textPath>
+              </text>
+              <text
+                fontSize="10"
+                fontWeight="600"
+                fontFamily="inherit"
+                fill="#f97316"
+                style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
+              >
+                <textPath href="#bottomArc" startOffset="50%" textAnchor="middle">
+                  Chat with Us
+                </textPath>
+              </text>
+            </svg>
+          )}
 
           <div
-            className={`absolute inset-0 rounded-full bg-gradient-to-br from-brand-red to-brand-orange border border-white/60
+            className={`relative w-20 h-20 flex items-center justify-center text-white cursor-pointer
               ${animationClass}
+              ${isOpen ? 'scale-95' : 'scale-100 group-hover:scale-110'}
             `}
-            style={{
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(185, 28, 28, 0.3)',
-            }}
-          />
-
-          <div className={`relative z-10 ${animationClass}`}>
-            <CustomChatIcon size="lg" />
+          >
+            <div
+              className={`absolute inset-0 rounded-full bg-gradient-to-br from-brand-red to-brand-orange opacity-0 blur-xl
+                ${animationClass}
+                ${isOpen ? 'opacity-70' : 'group-hover:opacity-50'}
+              `}
+            />
+            <div
+              className={`absolute inset-0 rounded-full bg-gradient-to-br from-brand-red to-brand-orange border border-white/60 ${animationClass}`}
+              style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.25), 0 4px 12px rgba(185,28,28,0.3)' }}
+            />
+            <div className={`relative z-10 ${animationClass}`}>
+              <CustomChatIcon size="lg" />
+            </div>
           </div>
+
+          {/* Mobile-only dismiss button — small X in top-left corner of the widget area */}
+          {!isOpen && (
+            <button
+              onClick={(e) => { e.stopPropagation(); hideMobileWidget(); }}
+              aria-label="Hide chat widget"
+              className="absolute top-0.5 left-0.5 sm:hidden w-5 h-5 rounded-full bg-stone-700/80 text-stone-300 hover:bg-stone-600 hover:text-white transition-colors flex items-center justify-center"
+            >
+              <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="2" y1="2" x2="10" y2="10" />
+                <line x1="10" y1="2" x2="2" y2="10" />
+              </svg>
+            </button>
+          )}
         </div>
-        {!isOpen && (
-          <span className="text-xs font-semibold text-brand-orange drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] select-none">
-            Chat with Us
-          </span>
-        )}
       </button>
 
       {isOpen && (
