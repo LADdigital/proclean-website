@@ -9,6 +9,7 @@ import ChatPlaceholder from './components/ChatPlaceholder';
 import { ToastProvider } from './components/ui/Toast';
 import { useDetailMode } from './features/easterEggs/useDetailMode';
 import { useToast } from './components/ui/Toast';
+import { useSEO } from './hooks/useSEO';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -44,12 +45,18 @@ function DetailModeManager() {
   return <DetailModeOverlay />;
 }
 
+function SEOManager() {
+  useSEO();
+  return null;
+}
+
 function PublicLayout({ showLoader }: { showLoader: boolean }) {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
     <>
       <ScrollToTop />
+      <SEOManager />
       <SchemaMarkup />
       <DetailModeManager />
       <Header onOpenChat={() => setChatOpen(true)} />
