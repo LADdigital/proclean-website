@@ -335,30 +335,12 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
               aria-hidden="true"
             >
               <defs>
-                {/* Top arc */}
                 <path
                   id="topArc"
                   d="M 22,62 A 40,40 0 0,1 102,62"
                   fill="none"
                 />
-                {/* Bottom arc */}
-                <path
-                  id="bottomArc"
-                  d="M 22,64 A 40,40 0 0,0 102,64"
-                  fill="none"
-                />
               </defs>
-              <text
-                fontSize="10"
-                fontWeight="600"
-                fontFamily="inherit"
-                fill="#f97316"
-                style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
-              >
-                <textPath href="#topArc" startOffset="50%" textAnchor="middle">
-                  Have Questions?
-                </textPath>
-              </text>
               <text
                 fontSize="10.5"
                 fontWeight="700"
@@ -366,7 +348,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
                 fill="#f97316"
                 style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.85))' }}
               >
-                <textPath href="#bottomArc" startOffset="50%" textAnchor="middle">
+                <textPath href="#topArc" startOffset="50%" textAnchor="middle">
                   Chat with Us
                 </textPath>
               </text>
