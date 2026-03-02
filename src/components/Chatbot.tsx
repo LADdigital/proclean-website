@@ -323,7 +323,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className={`fixed bottom-4 right-4 z-[9999] group overflow-visible ${isShaking ? 'animate-widget-shake' : ''} transition-all duration-300 ${isMobileHidden ? 'sm:flex hidden' : 'flex'}`}
+        className={`fixed bottom-4 right-6 z-[9999] group overflow-visible ${isShaking ? 'animate-widget-shake' : ''} transition-all duration-300 ${isMobileHidden ? 'sm:flex hidden' : 'flex'}`}
         style={{ touchAction: 'manipulation' }}
       >
         {/* Curved text SVG wrapper — sized to encompass the 80px button with arc labels */}
@@ -331,21 +331,20 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
           {!isOpen && (
             <svg
               viewBox="0 0 124 124"
-              className="absolute inset-0 w-full h-full pointer-events-none select-none"
-              style={{ overflow: 'visible' }}
+              className="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden"
               aria-hidden="true"
             >
               <defs>
                 {/* Top arc */}
                 <path
                   id="topArc"
-                  d="M 16,62 A 46,46 0 0,1 108,62"
+                  d="M 22,62 A 40,40 0 0,1 102,62"
                   fill="none"
                 />
-                {/* Bottom arc — radius slightly smaller so text sits closer to the button edge */}
+                {/* Bottom arc */}
                 <path
                   id="bottomArc"
-                  d="M 16,64 A 46,46 0 0,0 108,64"
+                  d="M 22,64 A 40,40 0 0,0 102,64"
                   fill="none"
                 />
               </defs>
