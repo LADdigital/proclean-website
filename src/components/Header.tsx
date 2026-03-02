@@ -91,6 +91,13 @@ export default function Header({ onOpenChat }: HeaderProps) {
                 <MessageCircle className="w-4 h-4" />
                 Have a Question?
               </button>
+              <button
+                onClick={() => { onOpenChat?.(); setMenuOpen(false); }}
+                className="inline-flex sm:hidden items-center gap-1.5 px-3 py-1.5 border border-white/30 text-white text-xs font-semibold rounded-lg hover:bg-white/10 hover:border-white/60 transition-all"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                Question?
+              </button>
               <a
                 href={BOOKING_URL}
                 target="_blank"

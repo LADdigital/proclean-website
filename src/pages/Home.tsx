@@ -141,8 +141,16 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full flex flex-col lg:min-h-screen" style={contentTransform}>
-          <div className="lg:flex-1 flex flex-col justify-start pt-28 sm:pt-32 lg:pt-64">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="lg:hidden pt-16 sm:pt-20">
+            <img
+              src={siteContent.images.hero.src}
+              alt={siteContent.images.hero.alt}
+              className="w-full h-auto object-contain"
+            />
+          </div>
+
+          <div className="lg:flex-1 flex flex-col justify-start lg:pt-64">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-6 lg:pt-0">
               <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight">
                 Come See the Future of the{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange-light to-brand-red-light">
@@ -151,14 +159,6 @@ export default function Home() {
               </h1>
               <div className="w-16 h-0.5 bg-gradient-to-r from-brand-orange-light to-brand-red-light rounded-full mx-auto mt-6" />
             </div>
-          </div>
-
-          <div className="lg:hidden">
-            <img
-              src={siteContent.images.hero.src}
-              alt={siteContent.images.hero.alt}
-              className="w-full h-auto object-contain"
-            />
           </div>
 
           <div className="pb-6 sm:pb-10 lg:pb-20 pt-3 lg:pt-8">

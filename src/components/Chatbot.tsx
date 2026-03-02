@@ -299,9 +299,14 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className={`fixed bottom-6 right-6 z-[9999] group ${isShaking ? 'animate-widget-shake' : ''}`}
+        className={`fixed bottom-6 right-6 z-[9999] group flex flex-col items-center gap-1 ${isShaking ? 'animate-widget-shake' : ''}`}
         style={{ touchAction: 'manipulation' }}
       >
+        {!isOpen && (
+          <span className="text-xs font-semibold text-brand-orange drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] select-none">
+            Have Questions?
+          </span>
+        )}
         <div
           className={`relative w-20 h-20 flex items-center justify-center text-white cursor-pointer
             ${animationClass}
@@ -328,6 +333,11 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
             <CustomChatIcon size="lg" />
           </div>
         </div>
+        {!isOpen && (
+          <span className="text-xs font-semibold text-brand-orange drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] select-none">
+            Chat with Us
+          </span>
+        )}
       </button>
 
       {isOpen && (
