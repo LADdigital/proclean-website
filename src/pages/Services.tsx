@@ -185,14 +185,16 @@ export default function Services() {
 
       {!loading && (
         <div className="bg-white">
-          {displayServices.map((service, i) => {
+          {(() => {
+            let imageServiceIndex = 0;
+            return displayServices.map((service, i) => {
             const anchorId = service.service_key ?? service.id;
             const staticMatch = staticServices.find(s => s.id === service.service_key);
             const fallbackImageEntry = siteContent.images.services[anchorId as keyof typeof siteContent.images.services];
             const uploadedImage = serviceImages[anchorId];
             const dbImage = service.image_url;
             const hasImage = isEditorMode || uploadedImage || dbImage || fallbackImageEntry;
-            const reverseLayout = i % 2 === 1 || anchorId === 'ceramic-coating';
+            const reverseLayout = hasImage ? imageServiceIndex++ % 2 === 1 : false;
 
             return (
               <section
@@ -287,7 +289,8 @@ export default function Services() {
                 </div>
               </section>
             );
-          })}
+          });
+          })()}
         </div>
       )}
 
