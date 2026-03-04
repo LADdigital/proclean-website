@@ -323,7 +323,7 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open chat assistant"
         aria-expanded={isOpen}
-        className={`fixed bottom-4 right-6 z-[9999] group overflow-visible ${isShaking ? 'animate-widget-shake' : ''} transition-all duration-300 ${isMobileHidden ? 'sm:flex hidden' : 'flex'}`}
+        className={`fixed bottom-4 right-6 z-[9999] group overflow-visible ${isShaking ? 'animate-widget-shake' : ''} transition-all duration-300 ${isOpen ? 'opacity-0 pointer-events-none scale-75' : isMobileHidden ? 'sm:flex hidden' : 'flex'}`}
         style={{ touchAction: 'manipulation' }}
       >
         {/* Curved text SVG wrapper — sized to encompass the 80px button with arc labels */}
@@ -402,19 +402,19 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
 
       <div
         ref={panelRef}
-        className={`fixed z-[10000] flex flex-col bg-brand-charcoal/95 backdrop-blur-[12px] border border-white/10 shadow-2xl
-          max-w-sm w-full mx-4
+        className={`fixed z-[10000] flex flex-col bg-brand-charcoal/95 backdrop-blur-[12px] border border-white/10 shadow-2xl rounded-2xl
           ${animationClass}
           ${isOpen
-            ? 'opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0'
-            : 'opacity-0 pointer-events-none max-lg:translate-y-full lg:translate-x-full'
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none translate-y-4'
           }
-          lg:bottom-28 lg:right-6 lg:rounded-2xl lg:h-[600px]
-          max-lg:bottom-0 max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:rounded-t-3xl max-lg:h-[82svh]
+          bottom-4 right-4
+          w-[calc(100vw-2rem)] max-w-sm
+          lg:bottom-28 lg:right-6 lg:h-[600px]
         `}
         style={{
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          maxHeight: 'calc(100svh - 48px)',
+          maxHeight: 'min(calc(100svh - 5rem), 600px)',
         }}
         role="dialog"
         aria-modal="true"
@@ -441,13 +441,13 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="overflow-y-auto p-4 space-y-4 lg:flex-1" style={{ minHeight: 0 }}>
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-brand-red to-brand-orange flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center justify-center text-center px-4 py-6">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-brand-red to-brand-orange flex items-center justify-center mb-3">
                 <CustomChatIcon />
               </div>
-              <h3 className="text-white font-semibold mb-2">Welcome!</h3>
+              <h3 className="text-white font-semibold mb-1">Welcome!</h3>
               <p className="text-stone-400 text-sm leading-relaxed">
                 Ask us about our detailing services, pricing, or business.
               </p>
