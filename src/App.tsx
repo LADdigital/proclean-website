@@ -15,7 +15,6 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
-import GiftCard from './pages/GiftCard';
 import { AdminAuthProvider } from './admin/AdminAuthContext';
 import AdminGuard from './admin/AdminGuard';
 import AdminDashboard from './admin/AdminDashboard';
@@ -67,7 +66,6 @@ function PublicLayout({ showLoader }: { showLoader: boolean }) {
           <Route path="/services" element={<Services />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/gift-card" element={<GiftCard />} />
         </Routes>
       </main>
       <DeveloperSignature />

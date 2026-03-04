@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Gift, MessageCircle } from 'lucide-react';
+import { Menu, X, Phone, MessageCircle } from 'lucide-react';
 import { BOOKING_URL, CONTACT } from '../data/services';
 
 const navLinks = [
@@ -170,13 +170,6 @@ export default function Header({ onOpenChat }: HeaderProps) {
               <MessageCircle className="w-5 h-5 shrink-0" />
               <span>Have a Question?</span>
             </button>
-            <Link
-              to="/gift-card"
-              className="flex items-center gap-3 px-4 py-3 text-brand-orange-light hover:text-white transition-colors min-h-[48px] font-semibold"
-            >
-              <Gift className="w-5 h-5 shrink-0" />
-              <span>Gift Cards</span>
-            </Link>
             <a
               href={CONTACT.phoneLink}
               className="flex items-center gap-3 px-4 py-3 text-white hover:text-brand-orange-light transition-colors min-h-[48px]"
