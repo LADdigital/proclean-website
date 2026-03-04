@@ -116,7 +116,7 @@ export default function DeveloperSignature() {
                 transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
               }}
             >
-              Crafted with precision by LAD Digital
+              
             </span>
           </a>
         </div>
