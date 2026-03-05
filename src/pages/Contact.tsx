@@ -138,80 +138,48 @@ export default function Contact() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-8">
-            <div className="fade-in-left flex-1">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-brand-red to-brand-orange text-white mb-4 shadow-lg">
-                <MessageCircle className="w-7 h-7" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-brand-charcoal mb-3">
-                Have Questions?
-              </h2>
-              <p className="text-lg text-stone-700 mb-5 leading-relaxed">
-                Our AI assistant is here to help! Ask us anything about:
-              </p>
-              <ul className="space-y-2.5 mb-5">
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-brand-red" />
-                  </div>
-                  <span className="text-stone-700">Service details and descriptions</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-brand-red" />
-                  </div>
-                  <span className="text-stone-700">Pricing and package information</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-brand-red" />
-                  </div>
-                  <span className="text-stone-700">Our detailing processes</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-brand-red" />
-                  </div>
-                  <span className="text-stone-700">Any other questions you might have</span>
-                </li>
-              </ul>
-              <p className="text-stone-600 font-medium">
-                Just click the chat button and start chatting!
-              </p>
+          <div className="fade-in-left max-w-2xl">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-brand-red to-brand-orange text-white mb-4 shadow-lg">
+              <MessageCircle className="w-7 h-7" />
             </div>
-
-            <div className="fade-in-right shrink-0">
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-red to-brand-orange text-white shadow-xl mb-3 animate-float">
-                  <MessageCircle className="w-10 h-10" />
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-charcoal mb-3">
+              Have Questions?
+            </h2>
+            <p className="text-lg text-stone-700 mb-5 leading-relaxed">
+              Our AI assistant is here to help! Ask us anything about:
+            </p>
+            <ul className="space-y-2.5 mb-5">
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-2 h-2 rounded-full bg-brand-red" />
                 </div>
-                <p className="text-sm font-semibold text-brand-charcoal">Chat Widget</p>
-                <p className="text-xs text-stone-500 mt-1">Bottom Right Corner</p>
-              </div>
-            </div>
+                <span className="text-stone-700">Service details and descriptions</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-2 h-2 rounded-full bg-brand-red" />
+                </div>
+                <span className="text-stone-700">Pricing and package information</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-2 h-2 rounded-full bg-brand-red" />
+                </div>
+                <span className="text-stone-700">Our detailing processes</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-2 h-2 rounded-full bg-brand-red" />
+                </div>
+                <span className="text-stone-700">Any other questions you might have</span>
+              </li>
+            </ul>
+            <p className="text-stone-600 font-medium">
+              Just click the chat button and start chatting!
+            </p>
           </div>
         </div>
 
-        <style>{`
-          @keyframes float {
-            0%, 100% {
-              transform: translateY(0px);
-            }
-            50% {
-              transform: translateY(-8px);
-            }
-          }
-
-          .animate-float {
-            animation: float 3s ease-in-out infinite;
-          }
-
-          @media (prefers-reduced-motion: reduce) {
-            .animate-float {
-              animation: none;
-            }
-          }
-        `}</style>
       </section>
     </div>
   );
