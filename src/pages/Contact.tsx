@@ -36,8 +36,24 @@ export default function Contact() {
 
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
-            <div className="lg:col-span-2 lg:col-start-4 fade-in-right space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            <div className="fade-in-left">
+              <div className="rounded-2xl overflow-hidden shadow-lg border border-stone-200">
+                <iframe
+                  title="Pro Clean Auto Detail Systems Location - 1231 S 1st, Yakima, WA 98901"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2756.5!2d-120.5115!3d46.5958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s1231+S+1st+St%2C+Yakima%2C+WA+98901!5e0!3m2!1sen!2sus!4v1700000000000"
+                  width="100%"
+                  height="450"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            <div className="fade-in-right space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-brand-charcoal mb-6">Contact Information</h2>
                 <ul className="space-y-5">
@@ -111,27 +127,6 @@ export default function Contact() {
                 </BookingButton>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-bold text-brand-charcoal mb-8 text-center fade-in">
-            Find Us in Yakima
-          </h2>
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-stone-200 fade-in">
-            <iframe
-              title="Pro Clean Auto Detail Systems Location - 1231 S 1st, Yakima, WA 98901"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2756.5!2d-120.5115!3d46.5958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s1231+S+1st+St%2C+Yakima%2C+WA+98901!5e0!3m2!1sen!2sus!4v1700000000000"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full"
-            />
           </div>
         </div>
       </section>
