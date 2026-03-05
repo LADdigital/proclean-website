@@ -1,50 +1,11 @@
-import { useState, type FormEvent } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { CONTACT } from '../data/services';
-import { supabase } from '../lib/supabase';
 
 export default function Contact() {
   const animRef = useScrollAnimation();
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: '',
-    message: '',
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError('');
-
-    try {
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert([{
-          name: formState.name,
-          email: formState.email,
-          phone: formState.phone,
-          service: formState.service,
-          message: formState.message,
-        }]);
-
-      if (dbError) throw dbError;
-
-      setSubmitted(true);
-      setFormState({ name: '', email: '', phone: '', service: '', message: '' });
-    } catch {
-      setError('Something went wrong. Please call us directly or try again later.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div ref={animRef}>
@@ -76,132 +37,7 @@ export default function Contact() {
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
-            <div className="lg:col-span-3 fade-in-left">
-              <h2 className="text-2xl font-bold text-brand-charcoal mb-6">Send Us a Message</h2>
-
-              {submitted ? (
-                <div className="p-8 rounded-xl bg-green-50 border border-green-200 text-center">
-                  <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-green-800 mb-2">Message Sent</h3>
-                  <p className="text-green-700">
-                    We'll get back to you as soon as possible. For immediate assistance,
-                    call us at{' '}
-                    <a href={CONTACT.phoneLink} className="font-semibold underline">
-                      {CONTACT.phone}
-                    </a>
-                    .
-                  </p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="mt-6 px-6 py-2 text-sm font-medium text-green-700 border border-green-300 rounded-lg hover:bg-green-100 transition-colors"
-                  >
-                    Send Another Message
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-1.5">
-                        Full Name
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        required
-                        value={formState.name}
-                        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-stone-300 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-colors"
-                        placeholder="Your name"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-1.5">
-                        Email
-                      </label>
-                      <input
-                        id="email"
-                        type="email"
-                        required
-                        value={formState.email}
-                        onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-stone-300 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-colors"
-                        placeholder="you@email.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-stone-700 mb-1.5">
-                        Phone (optional)
-                      </label>
-                      <input
-                        id="phone"
-                        type="tel"
-                        value={formState.phone}
-                        onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-stone-300 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-colors"
-                        placeholder="(509) 555-0000"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="service" className="block text-sm font-medium text-stone-700 mb-1.5">
-                        Service Interest
-                      </label>
-                      <select
-                        id="service"
-                        value={formState.service}
-                        onChange={(e) => setFormState({ ...formState, service: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-stone-300 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-colors bg-white"
-                      >
-                        <option value="">Select a service</option>
-                        <option value="ceramic-coating">Ceramic Coating</option>
-                        <option value="paint-correction">Paint Correction</option>
-                        <option value="interior-detailing">Interior Detailing</option>
-                        <option value="exterior-detailing">Exterior Detailing</option>
-                        <option value="wheel-restoration">Wheel Restoration</option>
-                        <option value="paint-touchup">Paint Touchup</option>
-                        <option value="rock-chip-repair">Rock Chip Repair</option>
-                        <option value="rv-detailing">RV Detailing</option>
-                        <option value="boat-detailing">Boat Detailing</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-stone-700 mb-1.5">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      required
-                      rows={5}
-                      value={formState.message}
-                      onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg border border-stone-300 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-colors resize-none"
-                      placeholder="Tell us about your vehicle and what you're looking for..."
-                    />
-                  </div>
-
-                  {error && (
-                    <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">{error}</p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="inline-flex items-center gap-2 px-8 py-3 bg-brand-red text-white font-semibold rounded-lg btn-apple-hover hover:shadow-lg hover:shadow-red-900/30 disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    <Send className="w-4 h-4" />
-                    {submitting ? 'Sending...' : 'Send Message'}
-                  </button>
-                </form>
-              )}
-            </div>
-
-            <div className="lg:col-span-2 fade-in-right space-y-8">
+            <div className="lg:col-span-2 lg:col-start-4 fade-in-right space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-brand-charcoal mb-6">Contact Information</h2>
                 <ul className="space-y-5">
