@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react';
 import BookingButton from '../components/BookingButton';
 import SocialLinks from '../components/SocialLinks';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
@@ -129,6 +129,132 @@ export default function Contact() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-stone-50 to-stone-100 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-red rounded-full filter blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-orange rounded-full filter blur-3xl" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="fade-in-left">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-brand-red to-brand-orange text-white mb-6 shadow-lg">
+                <MessageCircle className="w-7 h-7" />
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-brand-charcoal mb-4">
+                Have Questions?
+              </h2>
+              <p className="text-lg text-stone-700 mb-8 leading-relaxed">
+                Our AI assistant is here to help! Ask us anything about:
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-brand-red" />
+                  </div>
+                  <span className="text-stone-700">Service details and descriptions</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-brand-red" />
+                  </div>
+                  <span className="text-stone-700">Pricing and package information</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-brand-red" />
+                  </div>
+                  <span className="text-stone-700">Our detailing processes</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-brand-red" />
+                  </div>
+                  <span className="text-stone-700">Any other questions you might have</span>
+                </li>
+              </ul>
+              <p className="text-stone-600 font-medium">
+                Just click the chat button and start chatting!
+              </p>
+            </div>
+
+            <div className="fade-in-right relative h-64 sm:h-80 flex items-center justify-center">
+              <div className="relative w-full h-full flex items-center justify-end pr-4 sm:pr-0">
+                <div className="absolute right-0 bottom-0 w-64 h-64 pointer-events-none">
+                  <svg viewBox="0 0 300 300" className="w-full h-full" preserveAspectRatio="none">
+                    <defs>
+                      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#DC2626" />
+                      </marker>
+                    </defs>
+
+                    <path d="M 250 50 Q 220 100 180 160" stroke="#DC2626" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)" opacity="0.7" strokeDasharray="5,5" className="animate-dash" />
+
+                    <circle cx="250" cy="50" r="6" fill="#DC2626" opacity="0.8" className="animate-pulse-dot" />
+                  </svg>
+                </div>
+
+                <div className="relative z-10 text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-red to-brand-orange text-white shadow-xl mb-4 animate-float">
+                    <MessageCircle className="w-10 h-10" />
+                  </div>
+                  <p className="text-sm font-semibold text-brand-charcoal">Chat Widget</p>
+                  <p className="text-xs text-stone-500 mt-1">Bottom Right Corner</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes dash {
+            to {
+              stroke-dashoffset: -10;
+            }
+          }
+
+          .animate-dash {
+            animation: dash 0.5s linear infinite;
+          }
+
+          @keyframes pulse-dot {
+            0%, 100% {
+              opacity: 0.8;
+              r: 6;
+            }
+            50% {
+              opacity: 0.3;
+              r: 8;
+            }
+          }
+
+          .animate-pulse-dot {
+            animation: pulse-dot 2s ease-in-out infinite;
+          }
+
+          @keyframes float {
+            0%, 100% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-8px);
+            }
+          }
+
+          .animate-float {
+            animation: float 3s ease-in-out infinite;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .animate-dash,
+            .animate-pulse-dot,
+            .animate-float {
+              animation: none;
+            }
+          }
+        `}</style>
       </section>
     </div>
   );
