@@ -1,7 +1,6 @@
 import { supabase } from './supabase';
 
-const SITE_NAME = 'procleanautodetailing';
-const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/jqbnqvj7fblonsrcr320pta1jiypxb1x';
+export const SITE_NAME = 'procleanautodetailing';
 const SAMPLE_RATE = 0.8;
 
 const SESSION_ID_KEY = 'chat_session_id';
@@ -12,11 +11,20 @@ export interface ConversationMessage {
   message: string;
 }
 
-export interface MakePayload {
+interface ChatMessagePayload {
+  type: 'chat_message';
+  site: string;
+  session_id: string;
+  message: string;
+  timestamp: string;
+}
+
+interface ConversationUpdatePayload {
+  type: 'conversation_update';
   site: string;
   session_id: string;
   conversation: ConversationMessage[];
-  created_at: string;
+  timestamp: string;
 }
 
 export function generateSessionId(): string {
@@ -51,15 +59,59 @@ export function shouldSampleConversation(): boolean {
   return sampled;
 }
 
-async function sendConversationToMake(payload: MakePayload): Promise<void> {
+function getWebhookUrl(): string {
+  return (import.meta.env.VITE_CHATBOT_WEBHOOK as string) || '';
+}
+
+export async function sendChatMessageWebhook(
+  sessionId: string,
+  message: string
+): Promise<void> {
+  const url = getWebhookUrl();
+  if (!url) return;
+
+  const payload: ChatMessagePayload = {
+    type: 'chat_message',
+    site: SITE_NAME,
+    session_id: sessionId,
+    message,
+    timestamp: new Date().toISOString(),
+  };
+
   try {
-    await fetch(MAKE_WEBHOOK_URL, {
+    await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
   } catch (error) {
-    console.error('Make.com webhook send failed:', error);
+    console.error('Chat message webhook failed:', error);
+  }
+}
+
+async function sendConversationUpdateWebhook(
+  sessionId: string,
+  conversation: ConversationMessage[]
+): Promise<void> {
+  const url = getWebhookUrl();
+  if (!url) return;
+
+  const payload: ConversationUpdatePayload = {
+    type: 'conversation_update',
+    site: SITE_NAME,
+    session_id: sessionId,
+    conversation,
+    timestamp: new Date().toISOString(),
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.error('Conversation update webhook failed:', error);
   }
 }
 
@@ -67,10 +119,13 @@ export async function saveConversation(
   sessionId: string,
   conversation: ConversationMessage[]
 ): Promise<void> {
-  if (!supabase) return;
+  if (!supabase) {
+    sendConversationUpdateWebhook(sessionId, conversation);
+    return;
+  }
 
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('chat_logs')
       .upsert(
         {
@@ -80,24 +135,15 @@ export async function saveConversation(
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'session_id' }
-      )
-      .select('created_at')
-      .maybeSingle();
+      );
 
     if (error) {
       console.error('Chat log save failed:', error);
-      return;
     }
 
-    const payload: MakePayload = {
-      site: SITE_NAME,
-      session_id: sessionId,
-      conversation,
-      created_at: data?.created_at ?? new Date().toISOString(),
-    };
-
-    sendConversationToMake(payload);
+    sendConversationUpdateWebhook(sessionId, conversation);
   } catch (err) {
     console.error('Chat log unexpected error:', err);
+    sendConversationUpdateWebhook(sessionId, conversation);
   }
 }

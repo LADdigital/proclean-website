@@ -111,10 +111,14 @@ async function sendMessageToWebhook(message: string, sessionId: string): Promise
   try {
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message, session_id: sessionId }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'chat_message',
+        site: 'procleanautodetailing',
+        session_id: sessionId,
+        message,
+        timestamp: new Date().toISOString(),
+      }),
     });
 
     if (!response.ok) {
