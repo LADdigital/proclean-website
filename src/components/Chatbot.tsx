@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Send } from 'lucide-react';
+import {
+  generateSessionId,
+  resetSessionId,
+  shouldSampleConversation,
+  saveConversation,
+  type ConversationMessage,
+} from '../lib/chatLogger';
 
 const WEBHOOK_URL = import.meta.env.VITE_CHATBOT_WEBHOOK || '';
 const DEFAULT_BOOKING_URL = 'https://procleanautodetailing.setmore.com/book';
@@ -194,7 +201,8 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [sessionId, setSessionId] = useState(() => generateUUID());
+  const [sessionId, setSessionId] = useState(() => generateSessionId());
+  const isSampledRef = useRef<boolean>(shouldSampleConversation());
   const [isShaking, setIsShaking] = useState(false);
   const [isMobileHidden, setIsMobileHidden] = useState(() => {
     return sessionStorage.getItem('chatWidgetHidden') === 'true';
@@ -264,7 +272,9 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   useEffect(() => {
     if (isOpen) {
       if (messages.length === 0) {
-        setSessionId(generateUUID());
+        const newId = resetSessionId();
+        setSessionId(newId);
+        isSampledRef.current = shouldSampleConversation();
       }
       setTimeout(() => inputRef.current?.focus(), 100);
     }
@@ -293,7 +303,20 @@ export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
       };
     }
 
-    setMessages(prev => [...prev, assistantMessage]);
+    setMessages(prev => {
+      const updated = [...prev, assistantMessage];
+
+      if (isSampledRef.current) {
+        const logPayload: ConversationMessage[] = updated.map((m) => ({
+          role: m.role,
+          message: m.content,
+        }));
+        saveConversation(sessionId, logPayload);
+      }
+
+      return updated;
+    });
+
     setIsLoading(false);
   };
 
